@@ -1,0 +1,43 @@
+java 순수코드
+resourece 
+
+test/java
+test/resourece 
+
+(자바처럼 처음만들면 )인코딩
+General -> Workspace 에서 Text file encoding을 UTF-8로 변경
+General -> Content Types에서 Text 하위 항목들의 Default encoding을 UTF-8로 Update
+
+
+프로젝트만들기
+스프링 래거시 프로젝트 > (프로젝트이름) 입력 > mvc프로젝트 선택 > (org.joonzis.cotroller) 수업중엔 고정
+
+
+tomcoat연결 방법
+좌측하단 Servers 탭에서 빈 곳을 마우스 우클릭 >  New > Server 선택
+Apache > Tomcat vX.X (설치한 버전)를 선택하고 Next를 누릅니다
+Tomcat installation directory에서 톰캣이 설치된 폴더 경로를 지정하고 Finish를 누릅니다
+서버 목록에 톰캣이 생기면 우클릭 후 Add and Remove...를 눌러 연결할 프로젝트를 오른쪽(Configured)으로 이동시키고 Finish를 누릅니다
+상단의 재생 버튼(Start)을 눌러 서버를 실행합니다
+-----------------------------------
+<워크스페이스 최초 설정>
+1. server등록 (tomcat)
+2. 인코딩 - textfile,workspace,html,css 등등
+
+<프로젝트 생성 설정>
+1. pom.xml( 버전 변경.., 디펜던시 수정, 추가 )
+2. 추가 인코딩 > web.xml
+-드라이브 -spring - 추가파일
+3. contextPath 경로 변경 (tomcat)
+	-> 서버가 초기화 될 대 마다 변경 해줘야 됨 
+서버탭에서 톰캣 더블클릭 > 모듈즈 > 해당 프로젝트 클릭하고 edit > Path 에 기본 / 로 설정
+------------------------------------
+https://mvnrepository.com/
+
+cglib 맨위에 2.2.2버전 maven에 있는소스코드 복사
+
+</dependencies> 바로 위에 추가
+
+
+pom.mxl
+

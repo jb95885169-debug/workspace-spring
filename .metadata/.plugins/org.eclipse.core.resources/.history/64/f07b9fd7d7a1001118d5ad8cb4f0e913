@@ -1,0 +1,19 @@
+package org.joonzis.DI_2;
+
+public class LgTV implements TV {
+	public LgTV() {
+		System.out.println("--> LgTV 객체 생성");
+	}
+	public void powerOn() {
+		System.out.println("--> TV 전원 켠다");
+	}
+	public void powerOff() {
+		System.out.println("--> TV 전원 끈다");
+	}
+	public void volumeUp() {
+		System.out.println("--> TV 볼륨 올린다");
+	}
+	public void volumeDown() {
+		System.out.println("--> TV 볼륨 내린다");
+	}
+}

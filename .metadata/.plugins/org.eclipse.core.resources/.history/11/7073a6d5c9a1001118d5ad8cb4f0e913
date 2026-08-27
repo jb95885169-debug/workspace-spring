@@ -1,0 +1,21 @@
+package org.joonzis.DI_1;
+
+public class SamsungTV (){
+
+		public SamsungTV() {
+			System.out.println("--> LgTV 객체 생성");
+		}
+		private void powerOn() {
+			System.out.println("--> TV 전원 켠다");
+		}
+		private void powerOff() {
+			System.out.println("--> TV 전원 끈다");
+		}
+		private void volumeUp() {
+			System.out.println("--> TV 볼륨 올린다");
+		}
+		private void volumeDown() {
+			System.out.println("--> TV 볼륨 내린다");
+		
+	}
+}

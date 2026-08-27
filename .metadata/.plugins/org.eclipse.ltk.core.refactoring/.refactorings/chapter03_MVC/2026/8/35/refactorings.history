@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;org.joonzis.cotroller&apos; to &apos;org.joonzis.controller&apos;&#x0D;&#x0A;- Original project: &apos;chapter03_MVC&apos;&#x0D;&#x0A;- Original element: &apos;chapter03_MVC/src/main/java/org.joonzis.cotroller&apos;&#x0D;&#x0A;- Renamed element: &apos;chapter03_MVC/src/main/java/org.joonzis.controller&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;org.joonzis.cotroller&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src\/main\/java&lt;org.joonzis.cotroller" name="org.joonzis.controller" qualified="false" references="true" stamp="1787816978136" textual="false" version="1.0"/>
+</session>
