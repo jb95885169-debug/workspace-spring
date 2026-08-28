@@ -31,6 +31,7 @@ Tomcat installation directory에서 톰캣이 설치된 폴더 경로를 지정�
 3. contextPath 경로 변경 (tomcat)
 	-> 서버가 초기화 될 대 마다 변경 해줘야 됨 
 서버탭에서 톰캣 더블클릭 > 모듈즈 > 해당 프로젝트 클릭하고 edit > Path 에 기본 / 로 설정
+text jsp도 인코딩
 ------------------------------------
 https://mvnrepository.com/
 
@@ -40,4 +41,69 @@ cglib 맨위에 2.2.2버전 maven에 있는소스코드 복사
 
 
 pom.mxl
+
+
+----------------------------------------
+
+기본세팅
+1. pom.xml 수정 추가 삭제 -> lombok 디펜던시 까지 추가
+
+2. web.xml 추가 인코딩
+
+
+3. ojdbc6.jar 빌드패스
+
+
+
+Deployment Assembly > Add >Java Build Path Enries 선택후 next >jar 파일 선택후 확인 > jsp에서 라이브러리에도 빌드패스 넣어주던 방식
+
+-------------------------------
+
+${org.springframework-version}   << 아래 버전 없으면 pom.xml 버전에서 이걸로 바꿔주기
+
+- ojdbc6 ⇒ 오라클과 자바 연동 라이브러리
+    - https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc6
+- spring-tx ⇒ 트랜잭션을 사용하기 위한 라이브러리 ( 5.0.7 )
+    - https://mvnrepository.com/artifact/org.springframework/spring-tx
+- spring-jdbc ⇒ DB와 연동하기 위한 라이브러리 ( 5.0.7 )
+    - https://mvnrepository.com/artifact/org.springframework/spring-jdbc
+- spring-test ⇒ 단위 테스트를 진행하기 위한 라이브러리 ( 5.0.7 )
+    - https://mvnrepository.com/artifact/org.springframework/spring-test
+- HikariCP ⇒ 대용량 데이터 처리 속도를 빠르게 하기 위한 라이브러리 ( 2.7.8 )
+    - https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+- MyBatis ⇒ DB 프레임워크 ( 3.4.6 )
+    - https://mvnrepository.com/artifact/org.mybatis/mybatis
+- mybatis-spring ⇒ MyBatis를 사용하기 위한 스프링 라이브러리 ( 1.3.2 )
+    - https://mvnrepository.com/artifact/org.mybatis/mybatis-spring
+- Log4jdbc ⇒ 데이터베이스 실행 시, 단위 테스트를 위한 라이브러리 ( 1.16 )
+    - https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1
+
+----------------------------
+포트번호 오류 뜨면 포트번호 수정
+포트번호 안뜬 오류 뜨면 서버 삭제후 톰캣9버전 다시 만들기
+
+
+<비즈니스 계층>
+
+-고객의 요구사항을 반영하는 계층
+ex) 쇼핑몰에서 상품을 구매한다! 그러면
+구매한 회원에게 포인트르 지급한다
+
+1. 상품 처리 객체
+2. 회원 처리 객체
+두가지 한번에 처리되는 트렌젝션
+
+컨테이너 객체 생성?
+	<context:component-scan base-package="org.joonzis.service"/>
+
+
+
+
+
+
+
+
+
+
+
 
