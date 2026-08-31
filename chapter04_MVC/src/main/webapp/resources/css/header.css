@@ -1,0 +1,58 @@
+.wrap{
+	width: 800px;
+	margin: auto;
+	text-align: center;
+}
+.header {
+	text-align: right;
+}
+.header, .footer {
+	width: 800px;
+	box-sizing: border-box;
+	border: 1px solid teal;
+	padding: 10px;
+	background-color: pink;
+	color: teal;
+}
+.header-title{
+	width: 20%;
+	text-align: left;
+	float: left;
+	margin-bottom: 10px;
+}
+.header-title a{
+	font-size: 20px;
+	font-weight: bold;
+	text-decoration: none;
+	color: teal;
+}
+.header-member{
+	width: 80%;
+	float: right;
+}
+.main {
+	width : 100%;
+	min-height : 700px;
+	box-sizing: border-box;
+	padding-top: 40px;
+	margin-bottom: 20px;
+}
+.menu {
+	width: 750px;
+	background-color: teal;
+	margin: auto;
+	text-align: right;
+	padding: 10px;
+	color: white;
+	padding-left: 20px;
+	clear: both;
+}
+.menu a {
+	text-decoration: none;		
+	color: white;
+	display: inline-block;
+	margin: 0 20px;
+}
+.header-btn{
+	font-size: 15px;
+}

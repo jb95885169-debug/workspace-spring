@@ -22,14 +22,16 @@ public class BoardServiceTests {
 	@Autowired
 	private BoardService service;
 	
-//	@Test
-//	public void testGetList() {
-//		List<BoardVO> list = service.getList();
-//		
-//		for (BoardVO vo : list) {
-//            log.info(vo);
-//        }	
-//	}
+	
+	// 전체 내용가져오기
+	@Test
+	public void testGetList() {
+		List<BoardVO> list = service.getList();
+		
+		for (BoardVO vo : list) {
+            log.info(vo);
+        }	
+	}
 	
 	// 데이터 삽입
 //	@Test
@@ -59,12 +61,13 @@ public class BoardServiceTests {
 //		
 //		service.modify(vo);
 //	}
-	// 단일데이터 가져오기
-	@Test
-	public void testget() {
-		BoardVO vo = service.get(10);
-		log.info(vo);
-	}
+	
+//	// 단일데이터 가져오기
+//	@Test
+//	public void testget() {
+//		BoardVO vo = service.get(10);
+//		log.info(vo);
+//	}
 	
 	
 }

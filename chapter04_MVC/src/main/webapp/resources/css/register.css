@@ -1,0 +1,57 @@
+.main{
+	width: 100%;
+	margin: auto;
+	text-align: center;
+}
+.page-header{
+	text-align: left;
+}
+.panel-body{
+	width: 100%;
+	margin: auto;
+}
+.panel-footer{
+	padding: 15px;
+	text-align: right;
+}
+table{
+	border-collapse : collapse;
+	width: 100%;
+	border-radius: 5px;
+	text-align: left;
+}
+th, td{
+	border: 1px solid gray;
+	padding: 7px;
+}
+th{
+	background-color: pink;
+	color: teal;
+}
+.btn{
+	padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-fir{
+    background-color: gray;
+    border: 1px solid gray;
+    color: #fff;
+}
+.btn-sec{
+	background-color: teal;
+    border: 1px solid teal;
+    color: #fff;
+}
+input{
+	padding: 5px;
+	width: 97%;
+	border: 1px solid gray;
+	border-radius: 5px;
+}
+textarea {
+	resize: none;
+	border: 1px solid gray;
+	border-radius: 5px;
+}
