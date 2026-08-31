@@ -5,7 +5,20 @@
 <mapper namespace="org.joonzis.mapper.BoardMapper">
 
 	<select id="getList" resultType="org.joonzis.domain.BoardVO">
-		select * from tbl_board
+			
+	<![CDATA[
+	         SELECT bno, title, content, writer, regdate, updatedate
+	         FROM (
+	             SELECT rownum rn, bno, title, content, writer, regdate, updatedate
+	             FROM (
+	                 SELECT bno, title, content, writer, regdate, updatedate
+	                 FROM tbl_board
+	                 ORDER BY bno DESC
+	             )
+	             WHERE rownum <= #{pageNum} * #{amount}
+	         )
+	         WHERE rn > (#{pageNum} - 1) * #{amount}
+	      ]]>
 	</select>
 	<insert id="insert">
 		insert into tbl_board
@@ -34,6 +47,8 @@
 		where
 			bno = #{bno}
 	</update>
-	
+	<select id="getTotal" resultType="int">
+		select count(*) from tbl_board
+	</select>
 	
 </mapper>

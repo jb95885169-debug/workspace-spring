@@ -26,6 +26,44 @@ const f = document.forms[0];	// form객체
 
 // register() - 제목 ,작성자, 내용 빈 값 검증 후 데이터 전송
 
+document.querySelectorAll("button").forEach( btn =>{
+    btn.addEventListener('click',()=>{
+
+        let type = btn.getAttribute("id");
+
+        console.log(type);
+        
+        if (type === 'indexBtn') {
+            location.href = '/board/list';
+        }else if(type === 'resetBtn'){
+            f.reset();
+        }else if(type === 'registerBtn'){
+            register();
+        }
+
+
+    })
+})
+// 게시글 등록 함수
+function register(){
+    if(f.title.value == ''){
+        alert('제목을 입력하세요')
+        return;
+    }
+    if(f.writer.value == ''){
+        alert('작성자을 입력하세요')
+        return;
+    }
+    if(f.content.value == ''){
+        alert('내용을 입력하세요')
+        return;
+    }
+
+    f.action = '/board/register';
+    f.submit();
+
+}
+
 
 
 
