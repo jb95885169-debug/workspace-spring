@@ -34,7 +34,9 @@ document.querySelectorAll("button").forEach( btn =>{
         console.log(type);
         
         if (type === 'indexBtn') {
-            location.href = '/board/list';
+        	const {pageNum, amount} = getStorageData();
+        	const sendData = `pageNum=${pageNum}&amount=${amount}`;
+            location.href = '/board/list?' + sendData;
         }else if(type === 'resetBtn'){
             f.reset();
         }else if(type === 'registerBtn'){

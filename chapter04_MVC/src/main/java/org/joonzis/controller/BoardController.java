@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.extern.log4j.Log4j;
 
-@Controller	// <서블릿으로 만들어줌	
+@Controller // <서블릿으로 만들어줌	
 @Log4j
 @RequestMapping("/board/*")
 public class BoardController {
@@ -46,21 +46,21 @@ public class BoardController {
 		
 		
 		return "board/list";
-	};	// 데이터를 가져가야하기 때문에 포워드 방식
+	}	// 데이터를 가져가야하기 때문에 포워드 방식
 	
 //	2. 게시글 등록 화면 이동
 	@GetMapping("/register")
 	public String register2() {
 		log.info("register...  : "  );
 		return "/board/register"; 
-	};
+	}
 //	2. 게시글 등록
 	@PostMapping("/register")
 	public String register(BoardVO vo) {
 		log.info("register...  : " + vo );
 		service.register(vo);
 		return "redirect:/board/list"; 
-	};
+	}
 	
 //	3. 게시글 조회
 	@GetMapping({"/get", "/modify"})	// 같은 코드를 두번쓰는 걸 방지하기 위해 /get, /modify을 배열처리
@@ -68,7 +68,7 @@ public class BoardController {
 		log.info("get...  : " + bno );
 		model.addAttribute("vo", service.get(bno));
 		
-	};
+	}
 //	4-2. 게시글 수정 페이지로 이동?
 //	@GetMapping("/modify")
 //	public String getModify(@RequestParam("bno") int bno, Model model) {
@@ -87,7 +87,7 @@ public class BoardController {
 		}
 //		service.modify(vo);	// 위에는  modify가 불리안타입으로 받았기때문에
 		return "redirect:/board/list"; 
-	};
+	}
 	
 	
 	

@@ -2,6 +2,7 @@
 <aop-reference-model>
 <aop-project name="chapter04_MVC"/>
 <aop-project name="chapter01_overview"/>
+<aop-project name="chapter05_REST"/>
 <aop-project name="chapter02_DI"/>
 <aop-project name="chapter03_MVC"/>
 </aop-reference-model>

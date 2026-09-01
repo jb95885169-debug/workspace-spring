@@ -33,6 +33,7 @@ document.querySelectorAll("button").forEach(btn => {
 // modify 함수
 // 제목, 내용 빈 값 검증 후 전송
 const f = document.forms[0];
+
 function modify(){
     if(!f.title.value){
         alert('제목을 입력하세요')

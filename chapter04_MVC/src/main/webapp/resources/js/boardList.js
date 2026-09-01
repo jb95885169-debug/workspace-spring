@@ -34,16 +34,32 @@ document.querySelectorAll('tbody a').forEach(a =>{
     });
 });
 
+// ----------페이징 처리 관련 코드
+let pageNum = new URLSearchParams(location.search).get('pageNum');
+let amount = new URLSearchParams(location.search).get('amount');
+if(!pageNum || !amount){
+	pageNum = 1;
+	amount = 10;
+}
+setStorageData(pageNum, amount);
+
+
+
 
 // 페이지 버튼 클릭 이벤트 - 
 document.querySelectorAll(".page-nation li a").forEach(aEle =>{
-	eEle.addEventListener('click', e=> {
+	aEle.addEventListener('click', e=> {
 		e.preventDefault();
 		
-		console.log(e.target.getAttribute('href'));
+		pageNum = e.target.getAttribute('href');
+		amount = 10;
 		
-	})
-})
+		
+		sendData = `pageNum=${pageNum}&amount=${amount}`;
+		location.href = `/board/list?pageNum=${pageNum}&amount=${amount}`;
+		
+	});
+});
 
 
 

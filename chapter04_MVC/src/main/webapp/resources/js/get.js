@@ -23,18 +23,44 @@ document.querySelectorAll("button").forEach(btn => {
         }
     });
 });
-
+const f = document.forms[0]
 // modify 함수 - /board/modify?bno=bno 로 서블릿 요청
 function modify(){
    //let bno;
    // 1. form 객체에서 name 속성 데이터 가져오는 방법
-   const bno = document.forms[0].bno.value;
+	const bno = f.bno.value;
    
    // 2. URLSearchParams 객체 이용
    
 //   bno = new URLSearchParams(location.serach).get("bno");
    location.href = '/board/modify?bno=' + bno;
 }
+
+// -----------------------------댓글 관련 스크립트--------------
+
+const rs = replyService; // reply.js에서 CRUD 담당하는 객체
+// 댓글추가
+//rs.add(
+//    {
+//    	bno : f.bno.value,
+//    	reply : 'JS TEST',
+//    	replyer : 'JS TESTER'
+//    },
+//    function(result){
+//		alert(result);
+//    }
+//);
+
+//rs.getList(f.bno.value, function(result) {
+//	console.log(result);
+//});
+
+re.remove(f.bno.value, function(result) {
+	console.log(result);
+	});
+
+
+
 
 
 

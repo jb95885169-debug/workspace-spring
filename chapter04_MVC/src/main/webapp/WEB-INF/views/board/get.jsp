@@ -44,6 +44,8 @@
 	</div>
 
 	<jsp:include page="../layout/footer.jsp"/>
+	
+	<script type="text/javascript" src="/resources/js/reply.js"></script>	
 	<script type="text/javascript" src="/resources/js/get.js"></script>	
 </body>
 </html>

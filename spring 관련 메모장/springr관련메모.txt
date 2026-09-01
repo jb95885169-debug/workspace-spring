@@ -99,6 +99,45 @@ ex) 쇼핑몰에서 상품을 구매한다! 그러면
 
 
 
+-------------------chapter05 라이브러리----------
+- Jackson-databind ⇒ jackson-core 및 jackson-annotation 라이브러리의 의존성을 포함하여 사용할 수 있도록 하는 라이브러리 ( 2.12.2 )
+    - https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+- Jackson-dataformat-xml ⇒ xml 형식으로 사용하기 위해 ( 2.12.2 )
+    - https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
+- gson ⇒ 테스트 시 json 타입의 문자열로 변환하기 위해 ( 2.8.6 )
+    - https://mvnrepository.com/artifact/com.google.code.gson/gson
+- lombok ( 1. 18. 0 )
+    - https://mvnrepository.com/artifact/org.projectlombok/lombok
+- spring-test ( 5.0.7 )
+    - https://mvnrepository.com/artifact/org.springframework/spring-test
+
+
+
+1.pom.xml - 수정 삭제 추가
+2. web - 추가 인코딩 utf-8
+3. tomcat-contextPath 수정 (/controller/)
+
+
+
+
+---------------------------
+
+chapter05
+REST 비동기 방식중 가장 대표적
+
+게시글 -동기방식
+
+
+댓글 - 비동기 방식
+fetch 
+
+http://localhost:8080/test/getObject.json
+http://localhost:8080/test/getObject
+
+
+
+
+
 
 
 

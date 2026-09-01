@@ -9,6 +9,8 @@ C:\dev\workspace\workspace-spring\.metadata\.plugins\org.eclipse.jst.jsp.core\js
 \chapter02_DI\src\main\java
 C:\dev\workspace\workspace-spring\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1348691806.index
 \chapter04_MVC\src\main\java
+C:\dev\workspace\workspace-spring\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\250512321.index
+\chapter05_REST\src\main\java
 C:\dev\workspace\workspace-spring\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\115342882.index
 \chapter01_overview\src\main\java
 C:\dev\workspace\workspace-spring\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1557825448.index
