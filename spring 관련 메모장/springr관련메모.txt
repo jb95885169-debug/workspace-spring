@@ -10,7 +10,7 @@ General -> Content Types에서 Text 하위 항목들의 Default encoding을 UTF-
 
 
 프로젝트만들기
-스프링 래거시 프로젝트 > (프로젝트이름) 입력 > mvc프로젝트 선택 > (org.joonzis.cotroller) 수업중엔 고정
+스프링 래거시 프로젝트 > (프로젝트이름) 입력 > mvc프로젝트 선택 > (org.joonzis.controller) 수업중엔 고정
 
 
 tomcoat연결 방법
@@ -137,12 +137,28 @@ http://localhost:8080/test/getObject
 
 
 
+파라미터로 보내면 param
+경로로 받으면?			pathvariable	패스베리어블
+제이슨으로 보내면 requestbody
 
 
 
+팀플
+영역별 말고 기능별로 역할나누기
+
+피그마 사이트?
+
+1주제 선정 
+2화면 구성
+3테이블 ERD
 
 
-
-
-
-
+------chapter06 라이브러리
+- lombok ( 1. 18. 0 )
+    - https://mvnrepository.com/artifact/org.projectlombok/lombok
+- spring-test ( 5.0.7 )
+    - https://mvnrepository.com/artifact/org.springframework/spring-test
+- aspectjrt ( 1.9.5 ) ⇒ AspectJ 기능을 사용하기 위한 런타임 라이브러리
+    - https://mvnrepository.com/artifact/org.aspectj/aspectjrt
+- aspectjweaver ( 1.9.5 ) ⇒ aspect 정보를 바탕으로 코드를 생성하는데에 필요한 라이브러리
+    - https://mvnrepository.com/artifact/org.aspectj/aspectjweaver

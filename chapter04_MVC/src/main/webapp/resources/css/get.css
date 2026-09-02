@@ -74,3 +74,53 @@ input:read-only, textarea:read-only{
 	border: 1px solid gray;
 	border-radius: 5px;
 }
+
+/* ------------------------------------------------ */
+
+/* 댓글 관련 css */
+.panel-footer{
+   border: 1px solid gray;
+   border-radius: 5px;
+   margin-top: 20px;
+}
+.panel-footer-header{
+   height: 40px;
+   padding: 5px;
+   background-color: lightgray;
+}
+.panel-footer-title{
+   float: left;
+   text-align: left;
+   margin-left: 15px;
+}
+.panel-footer-title a{
+   font-size: 20px;
+   font-weight: bold;
+   text-decoration: none;
+   color: #000;
+   line-height: 40px;
+}
+.panel-footer-register{
+   width: 80%;
+   float: right;   
+   text-align: right;
+}
+.panel-footer-body{
+   padding: 10px;
+}
+.chat{
+   list-style-type: none;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+.chat li{
+   margin-bottom: 10px;
+   padding-bottom: 5px;
+   border-bottom: 1px dotted #999;
+}
+.pull-right{
+    color: #777;
+    font-size: 85%;
+    float: right;
+}

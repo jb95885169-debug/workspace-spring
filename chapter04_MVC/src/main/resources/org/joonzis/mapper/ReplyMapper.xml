@@ -11,7 +11,7 @@
 	<insert id="insert">
 		insert into tbl_reply
 		values(
-			seq_board.nextval,
+			seq_reply.nextval,
 			#{bno},
 			#{reply},
 			#{replyer},

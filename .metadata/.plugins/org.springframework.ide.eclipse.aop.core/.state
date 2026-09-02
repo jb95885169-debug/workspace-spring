@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aop-reference-model>
 <aop-project name="chapter04_MVC"/>
+<aop-project name="chapter06_AOP">
+<aspect-definition advice-class-name="org.joonzis.aop.LogAdvice" advice-method-name="logBefore" advice-type="BEFORE" aspect-end-line-number="14" aspect-name="logAdvice" aspect-start-line-number="14" factory-id="org.springframework.ide.eclipse.aop.core.annotationAspectDefinitionElementFactory" file="/chapter06_AOP/src/main/webapp/WEB-INF/spring/root-context.xml" pointcut-expression="execution(* org.joonzis.service.SampleService*.*(..))" proxy-target-class="false">
+<aop-reference advice-type="BEFORE" bean="1:BeansModel|2:chapter06_AOP|3:src/main/webapp/WEB-INF/spring/root-context.xml|7:beans:8|8:sampleServiceImpl:8" bean-file="/chapter06_AOP/src/main/webapp/WEB-INF/spring/root-context.xml" bean-start-line="8" factory-id="org.springframework.ide.eclipse.aop.core.aopReferenceElementFactory" file="/chapter06_AOP/src/main/webapp/WEB-INF/spring/root-context.xml" source="=chapter06_AOP/src\/main\/java&lt;org.joonzis.aop{LogAdvice.java[LogAdvice~logBefore" source-start-line="18" target="=chapter06_AOP/src\/main\/java&lt;org.joonzis.service{SampleServiceImpl.java[SampleServiceImpl~doAdd~QString;~QString;" target-start-line="9"/>
+</aspect-definition>
+</aop-project>
 <aop-project name="chapter01_overview"/>
 <aop-project name="chapter05_REST"/>
 <aop-project name="chapter02_DI"/>
