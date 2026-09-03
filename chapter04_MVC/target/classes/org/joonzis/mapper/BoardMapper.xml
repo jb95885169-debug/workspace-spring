@@ -7,11 +7,11 @@
 	<select id="getList" resultType="org.joonzis.domain.BoardVO">
 			
 	<![CDATA[
-	         SELECT bno, title, content, writer, regdate, updatedate
+	         SELECT bno, title, content, writer, regdate, replycnt
 	         FROM (
-	             SELECT rownum rn, bno, title, content, writer, regdate, updatedate
+	             SELECT rownum rn, bno, title, content, writer, regdate, replycnt
 	             FROM (
-	                 SELECT bno, title, content, writer, regdate, updatedate
+	                 SELECT bno, title, content, writer, regdate, replycnt
 	                 FROM tbl_board
 	                 ORDER BY bno DESC
 	             )
@@ -50,5 +50,13 @@
 	<select id="getTotal" resultType="int">
 		select count(*) from tbl_board
 	</select>
+	<update id="updateReplyCnt">
+		UPDATE TBL_BOARD
+		SET 
+			REPLYCNT = REPLYCNT + #{amount}
+		WHERE
+			BNO = #{bno}
+	</update>
+	
 	
 </mapper>

@@ -161,4 +161,36 @@ http://localhost:8080/test/getObject
 - aspectjrt ( 1.9.5 ) ⇒ AspectJ 기능을 사용하기 위한 런타임 라이브러리
     - https://mvnrepository.com/artifact/org.aspectj/aspectjrt
 - aspectjweaver ( 1.9.5 ) ⇒ aspect 정보를 바탕으로 코드를 생성하는데에 필요한 라이브러리
-    - https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+
+
+
+-------------chapter07 라이브러리-------
+- lombok ( 1. 18. 0 )
+    - https://mvnrepository.com/artifact/org.projectlombok/lombok
+- Jackson-databind ⇒ jackson-core 및 jackson-annotation 라이브러리의 의존성을 포함하여 사용할 수 있도록 하는 라이브러리 ( 2.12.2 )
+    - https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+- Jackson-dataformat-xml ⇒ xml 형식으로 사용하기 위해 ( 2.12.2 )
+    - https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
+- gson ⇒ 테스트 시 json 타입의 문자열로 변환하기 위해 ( 2.8.6 )
+    - https://mvnrepository.com/artifact/com.google.code.gson/gson
+
+파일 관련 추가 설정
+1. web.xml 에 서블릿 버전 변경 2.5 > 3.1
+2. web.xml 에 multipard-config 내용 추가
+<multipart-config>
+   <location>C:\\upload</location>
+   <max-file-size>20971520</max-file-size>
+   <max-request-size>41943040</max-request-size>
+   <file-size-threshold>20971520</file-size-threshold>
+</multipart-config>
+
+3. 실제 업로드 폴더 생성 ( C >upload ) 
+4. servlet-context.xml 안에 코드 추가
+<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+</beans:bean>
+
+
+C:\dev\images\java.jpg
+
+
+

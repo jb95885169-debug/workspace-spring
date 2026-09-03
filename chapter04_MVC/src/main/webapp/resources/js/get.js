@@ -247,17 +247,18 @@ function modifyModalPage(li) {
 function modReplyModalStyle(){
 	// 등록 버튼 숨기기
 	// 수정 & 삭제 버튼 보여주기
-	addReplyBtn.classList.add('hide');
+//	addReplyBtn.classList.add('hide');
 	modifyReplyBtn.classList.remove('hide');
 	removeReplyBtn.classList.remove('hide');
 	inputReplydate.closest('div').classList.remove('hide');
 	// 등록 날짜 데이터 보여주기
 	
 	// 등록 날짜, 작성자 수정 불가(읽기 전용)
-	inputReplyer.setAttribute('readonly', true);
-	inputReplydate.setAttribute('readonly', true);
+//	inputReplyer.setAttribute('readonly', true);
+//	inputReplydate.setAttribute('readonly', true);
 	
-	
+	addReplyBtn.classList.remove('hide');
+	inputReplyer.removeAttribute('readonly');
 }
 
 // 댓글 수정(내용 값 검증 ), 삭제(댓글 삭제 확인 메세지)

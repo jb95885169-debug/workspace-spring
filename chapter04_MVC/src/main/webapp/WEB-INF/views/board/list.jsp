@@ -29,7 +29,7 @@
 				<c:forEach var="vo" items="${list }">
 					<tr>
 						<td>${vo.bno }</td>
-						<td><a href = "${vo.bno }" >${vo.title }</a></td>
+						<td><a href = "${vo.bno }" >${vo.title } <b>[${vo.replycnt }]</b></a></td>
 						<td>${vo.writer }</td>
 						<td>${vo.regdate }</td>
 					</tr>
