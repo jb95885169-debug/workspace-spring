@@ -3,6 +3,7 @@ package org.joonzis.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.joonzis.domain.BoardAttachVO;
 import org.joonzis.domain.BoardVO;
 import org.joonzis.domain.Criteria;
 
@@ -22,10 +23,14 @@ public interface BoardMapper {
 	// 댓글에 의한 댓글 개수 데이터 변경
 	public void updateReplyCnt(
 			@Param("bno")int bno, @Param("amount") int amount);
+
 	
 	/*
 	 * 댓글이 등록되면 1이증가, 댓글이 삭제되면 1이 감소
 	 * @Param 어노테이션을 이용하여 다중 파라미터 전달 가능
 	 * */
 	
+	
+	// 마지막 bno값 가져오기
+	public int getBno();
 }

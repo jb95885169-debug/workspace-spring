@@ -55,3 +55,40 @@ textarea {
 	border: 1px solid gray;
 	border-radius: 5px;
 }
+
+
+/* 첨부 파일 관련 css */
+.file-container{
+   border: 1px solid gray;
+   border-radius: 5px;
+   margin-top: 20px;
+}
+.file-header{
+   height: 40px;
+   padding: 5px;
+   background-color: lightgray;
+}
+.file-title{
+   float: left;
+   text-align: left;
+   margin-left: 15px;
+}
+.file-title a{
+   font-size: 15px;
+   font-weight: bold;
+   text-decoration: none;
+   color: #000;
+   line-height: 40px;
+}
+.file-body{
+   padding: 10px;
+}
+input[type=file]{
+   border: 0;
+}
+.uploadResult{
+   text-align: left;
+}
+
+
+

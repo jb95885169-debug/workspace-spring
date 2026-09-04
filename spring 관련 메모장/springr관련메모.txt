@@ -177,6 +177,14 @@ http://localhost:8080/test/getObject
 파일 관련 추가 설정
 1. web.xml 에 서블릿 버전 변경 2.5 > 3.1
 2. web.xml 에 multipard-config 내용 추가
+
+"		
+	</servlet>
+		
+	<servlet-mapping>
+					"
+여기 위에 추가
+
 <multipart-config>
    <location>C:\\upload</location>
    <max-file-size>20971520</max-file-size>
@@ -186,6 +194,9 @@ http://localhost:8080/test/getObject
 
 3. 실제 업로드 폴더 생성 ( C >upload ) 
 4. servlet-context.xml 안에 코드 추가
+
+"<context:component-scan base-package="org.joonzis.controller" />" 여기 아래
+
 <beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
 </beans:bean>
 

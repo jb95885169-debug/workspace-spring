@@ -39,7 +39,28 @@
 		<button type="button" class="btn btn-fir" id="resetBtn">다시 작성</button>
 		<button type="button" class="btn btn-fir" id="indexBtn">목록으로 이동</button>
 	</div>
+	
+<!-- 파일 첨부 -->
+	<div class="file-container">
+	   <div class="file-header">
+	      <div class="file-title">
+	         <a>파일 첨부</a>
+	      </div>
+	   </div>
+	   <div class="file-body">
+	      <div class="uploadDiv">
+	         <input type="file" name="uploadFile" multiple="multiple">
+	      </div>
+	      <div class="uploadResult">
+	         <ul></ul>
+	      </div>
+	   </div>
+	</div>
+	
+	
 	<jsp:include page="../layout/footer.jsp"/>
 	<script type="text/javascript" src="/resources/js/register.js"></script>	
+	<script type="text/javascript" src="/resources/js/upload.js"></script>	
+	
 </body>
 </html>

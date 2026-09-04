@@ -296,4 +296,61 @@ function removeReply() {
     }
     
 }
+//--------------------첨부 파일 관련 스크립트----------------
+(function(){
+    
+    fetch(`/board/getAttachList/${f.bno.value}`)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            showUploadedFile(result);
+        })
+        .catch(err => console.log(err));
+
+
+})();
+
+//전달 받은 파일 정보 화면 출력 함수
+let uploadResult = document.querySelector(".uploadResult ul");
+function showUploadedFile(uploadResultArr) {
+	let str = ``;
+	uploadResultArr.forEach( file =>{
+
+		const {uploadPath, uuid, fileName} = file;	// 구조 분해 할당
+		let fileCallPath = encodeURIComponent(`${file.uploadPath}/${uuid}_${fileName}`);
+						// 
+		str +=`<li path="${uploadPath}" uuid="${uuid}" fileName="${fileName}">`;
+//		str +=`<a>`;
+		str +=`<a href="/download?fileName=${fileCallPath}">`;
+		str +=`${file.fileName}`;
+		str +=`</a>`;
+		str +=`</li>`;
+		
+		
+		// str += `<li>${file.fileName}</li>`;
+	});
+	uploadResult.innerHTML = str;
+}
+
+// 수정 페이지에서 첨부파일 수정, 삭제
+// -첨부파일은 수정이라는 개념이 x - 삭제후 삽입
+// 무분별하게  업로드 된 파일들 처리는 어떻게?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

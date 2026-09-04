@@ -69,6 +69,35 @@ function remove(){
 
 
 
+// --------수정페이지에서 첨부 파일 추가,삭제----------
+// 첨부파일은 수정이란 개념 X 삭제후 삽입
+
+
+//전달 받은 파일 정보 화면 출력 함수
+let uploadResult = document.querySelector(".uploadResult ul");
+function showUploadedFile(uploadResultArr) {
+	let str = ``;
+	uploadResultArr.forEach( file =>{
+
+		const {uploadPath, uuid, fileName} = file;	// 구조 분해 할당
+		let fileCallPath = encodeURIComponent(`${file.uploadPath}/${uuid}_${fileName}`);
+						// 
+		str +=`<li path="${uploadPath} uuid=${uuid}" fileName=${fileName}>`;
+		str +=`<a>`;
+//		str +=`<a href="/download?fileName=${fileCallPath}">`;
+		str +=`${file.fileName}`;
+		str +=`</a>`;
+		str +=`<span data-file="${fileCallPath}" > X </span>`;
+		str +=`</li>`;
+		
+		
+		// str += `<li>${file.fileName}</li>`;
+	});
+	uploadResult.innerHTML = str;
+}
+
+
+
 
 
 

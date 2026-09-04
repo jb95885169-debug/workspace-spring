@@ -69,6 +69,20 @@
    </div>
    <!-- panel footer -->
 
+   <div class="file-container">
+		   <div class="file-header">
+		      <div class="file-title">
+		         <a>첨부 파일</a>
+		      </div>
+		   </div>
+		   <div class="file-body">
+		      <div class="uploadResult">
+		         <ul></ul>
+		      </div>
+		   </div>
+	</div>
+
+<!-- modal -->
 		<div id="modal">
 		      <div class="modal-content">
 		         <div class="modal-title">

@@ -9,7 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.joonzis.domain.AttachFileDTO;
+
+import org.joonzis.domain.BoardAttachVO;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -67,10 +68,10 @@ public class UploadController {
 	@ResponseBody
 	@PostMapping(value = "/uploadAsyncAction",
 				produces = MediaType.APPLICATION_JSON_UTF8_VALUE		)
-	public ResponseEntity<List<AttachFileDTO>> uploadAsyncPost(MultipartFile[] uploadFile) {
+	public ResponseEntity<List<BoardAttachVO>> uploadAsyncPost(MultipartFile[] uploadFile) {
 		log.info("uploadAsyncPost...");
 
-		List<AttachFileDTO> list = new ArrayList<AttachFileDTO>();
+		List<BoardAttachVO> list = new ArrayList<BoardAttachVO>();
 		
 		String uploadFolder = "c:\\upload";
 
@@ -87,7 +88,7 @@ public class UploadController {
 		for(MultipartFile multipartFile : uploadFile){
 			
 			// 파일 정보를 담을 AttachFileDTO 객체 생성
-			AttachFileDTO attachDTO = new AttachFileDTO();
+			BoardAttachVO attachDTO = new BoardAttachVO();
 			
 			log.info("---------------------");
 			log.info("Upload File Name : " + multipartFile.getOriginalFilename());

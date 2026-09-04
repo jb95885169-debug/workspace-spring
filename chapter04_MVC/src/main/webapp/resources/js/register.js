@@ -11,11 +11,6 @@ linkEle.href = CSS_FILE_PATH;
 document.head.appendChild(linkEle);
 
 // 새 게시글 등록 클릭 이벤트
-
-document.querySelector('#registerBtn').addEventListener('click',()=>{
-    location.href = '/board/register';
-})
-
 const f = document.forms[0];	// form객체
 
 // 각 버튼 클릭 이벤트
@@ -61,6 +56,35 @@ function register(){
         return;
     }
 
+    
+    // 첨부 파일 정보 가져와서 form에 담기
+    let str = ``;
+    document.querySelectorAll(`.uploadResult ul li`).forEach((li, index) =>{
+    	let path = li.getAttribute("path");
+    	let uuid = li.getAttribute("uuid");
+    	let fileName = li.getAttribute("fileName");
+    	
+    	str += ` <input type="hidden"`;
+    	str += ` name="attachList[${index}].fileName" `;
+    	str += ` value="${fileName}"/>`;
+    	
+    	str += ` <input type= "hidden"`;
+    	str += ` name="attachList[${index}].uuid" `;
+    	str += ` value="${uuid}"/>`;
+    	
+    	str += ` <input type= "hidden"`;
+    	str += ` name="attachList[${index}].uploadPath" `;
+    	str += ` value="${path}"/>`;
+    	
+    });
+    
+//    f.innerHTML += str;
+    f.insertAdjacentHTML("beforeend", str);
+    
+//    console.log(f);
+    
+    
+    
     f.action = '/board/register';
     f.submit();
 

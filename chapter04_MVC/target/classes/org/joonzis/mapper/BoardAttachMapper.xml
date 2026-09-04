@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.joonzis.mapper.BoardAttachMapper">
+
+	<!-- 파일 추가 -->
+	<insert id="insert">
+		insert into tbl_attach
+		values(
+			#{uuid},
+			#{uploadPath},
+			#{fileName},
+			'',
+			#{bno}
+		)
+	</insert>
+
+	<!-- 파일 삭제 -->
+	<delete id="delete"  >
+		delete from tbl_attach where uuid=#{uuid}
+	</delete>
+
+	<select id="findByBno" resultType="org.joonzis.domain.BoardAttachVO" >
+		select * from tbl_attach where bno=#{bno}
+	</select>
+
+</mapper>

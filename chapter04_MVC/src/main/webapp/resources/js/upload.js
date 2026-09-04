@@ -21,8 +21,9 @@ let cloneObj = uploadDiv.firstElementChild.cloneNode(true);
 
 
 
-document.querySelector('#uploadBtn').addEventListener('click', ()=>{
+document.querySelector('input[type="file"]').addEventListener('change', ()=>{
 	const formData = new FormData();
+	
 	const inputFile = document.querySelector("input[type=file]");
 	const files = inputFile.files;
 	
@@ -62,9 +63,9 @@ function showUploadedFile(uploadResultArr) {
 		const {uploadPath, uuid, fileName} = file;	// 구조 분해 할당
 		let fileCallPath = encodeURIComponent(`${file.uploadPath}/${uuid}_${fileName}`);
 						// 
-		str +=`<li path="${uploadPath} uuid=${uuid}" fileName=${fileName}>`;
+		str +=`<li path="${uploadPath}" uuid="${uuid}" fileName="${fileName}">`;
 		str +=`<a>`;
-//		str +=`<a href="/download?fileName=${fileCallPath}">`;
+	//	str +=`<a href="/download?fileName=${fileCallPath}">`;
 		str +=`${file.fileName}`;
 		str +=`</a>`;
 		str +=`<span data-file="${fileCallPath}" > X </span>`;
@@ -90,12 +91,9 @@ uploadResult.addEventListener('click', e=>{
 		})
 			.then(response => response.text())
 			.then(result =>{
+				let targetLi = e.target.closest('li');
 				console.log(result);
-				
-				// 실제 업로드 파일 삭제 후 해당 태그 까지 삭제
-				let targetLi = e.target.closest("li");
 				targetLi.remove();
-				
 			})
 			.catch(err=>console.log(err));
 

@@ -28,7 +28,8 @@
 			#{content},
 			#{writer},
 			sysdate,
-			sysdate
+			sysdate,
+			0
 		)
 	</insert>
 	<select id="read" resultType="org.joonzis.domain.BoardVO">
@@ -57,6 +58,7 @@
 		WHERE
 			BNO = #{bno}
 	</update>
-	
-	
+	<select id="getBno" resultType="int">
+		SELECT seq_board.currval FROM dual
+	</select>
 </mapper>

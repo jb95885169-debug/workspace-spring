@@ -43,6 +43,21 @@
 		<button type="button" class="btn btn-thi" id="removeBtn">삭제</button>
 		<button type="button" class="btn btn-fir" id="indexBtn">목록으로 이동</button>
 	</div>
+	
+	
+   <div class="file-container">
+		   <div class="file-header">
+		      <div class="file-title">
+		         <a>첨부 파일</a>
+		      </div>
+		   </div>
+		   <div class="file-body">
+		      <div class="uploadResult">
+		         <ul></ul>
+		      </div>
+		   </div>
+	</div>
+	
 	<jsp:include page="../layout/footer.jsp"/>
 	<script type="text/javascript" src="/resources/js/modify.js"></script>	
 </body>
