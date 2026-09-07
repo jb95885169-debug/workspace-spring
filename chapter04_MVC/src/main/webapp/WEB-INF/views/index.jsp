@@ -9,13 +9,11 @@
 <body>
 	<jsp:include page="layout/header.jsp"/>
 	
-	<h1>메인 화면</h1>
+	<h1>메인화면</h1>
 	
 	<jsp:include page="layout/footer.jsp"/>
-	
 </body>
 </html>
-
 
 
 

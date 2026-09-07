@@ -10,8 +10,4 @@ public interface ReplyService {
 	public ReplyVO get(int rno);
 	public int modify(ReplyVO vo);
 	public int remove(int rno);
-	
-	
-	
-	
 }

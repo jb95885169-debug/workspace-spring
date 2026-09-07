@@ -1,7 +1,7 @@
 const regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
 const MAX_SIZE = 5242880; // 5MB
 
-function checkExtension(fileName,fileSize){
+function checkExtension(fileName, fileSize){
 	if(fileSize >= MAX_SIZE){
 		alert('파일 사이즈 초과');
 		return false;
@@ -12,16 +12,14 @@ function checkExtension(fileName,fileSize){
 	}
 	return true;
 }
+
 // 비어있는 요소 복사해두기
 // submit이 되어 파일이 업로드 되고 나면 초기화 진행 예정
 let uploadDiv = document.querySelector(".uploadDiv");
 let cloneObj = uploadDiv.firstElementChild.cloneNode(true);
 
 
-
-
-
-document.querySelector('input[type="file"]').addEventListener('change', ()=>{
+document.querySelector('input[type=file]').addEventListener('change', ()=>{
 	const formData = new FormData();
 	
 	const inputFile = document.querySelector("input[type=file]");
@@ -29,16 +27,16 @@ document.querySelector('input[type="file"]').addEventListener('change', ()=>{
 	
 	// file 객체들을 formData에 담기
 	for(let i=0; i<files.length; i++){
-
+		
 		if(!checkExtension(files[i].name, files[i].size)){
 			return false;
 		}
-
-		formData.append('uploadFile',files[i]);
+		
+		formData.append('uploadFile', files[i]);
 	}
 	
 	// 담겨진 formData 전송
-	fetch('/uploadAsyncAction',
+	fetch('/uploadAsyncAction', 
 			{
 				method : 'post',
 				body : formData
@@ -56,60 +54,52 @@ document.querySelector('input[type="file"]').addEventListener('change', ()=>{
 
 // 전달 받은 파일 정보 화면 출력 함수
 let uploadResult = document.querySelector(".uploadResult ul");
-function showUploadedFile(uploadResultArr) {
+function showUploadedFile(uploadResultArr){
 	let str = ``;
-	uploadResultArr.forEach( file =>{
-
-		const {uploadPath, uuid, fileName} = file;	// 구조 분해 할당
-		let fileCallPath = encodeURIComponent(`${file.uploadPath}/${uuid}_${fileName}`);
-						// 
-		str +=`<li path="${uploadPath}" uuid="${uuid}" fileName="${fileName}">`;
-		str +=`<a>`;
-	//	str +=`<a href="/download?fileName=${fileCallPath}">`;
-		str +=`${file.fileName}`;
-		str +=`</a>`;
-		str +=`<span data-file="${fileCallPath}" > X </span>`;
-		str +=`</li>`;
+	uploadResultArr.forEach( file => {
+		const {uploadPath, uuid, fileName} = file;
+		let fileCallPath = 
+			encodeURIComponent(`${uploadPath}/${uuid}_${fileName}`);
+		str += `<li path="${uploadPath}" uuid="${uuid}" fileName="${fileName}">`;
+		//str += `<a href="/download?fileName=${fileCallPath}">`;
+		str += `<a>`;
+		str += `${file.fileName}`;
+		str += `</a>`;
+		str += `<span data-file="${fileCallPath}"> X </span>`;
+		str += `</li>`;
 		
-		
-		// str += `<li>${file.fileName}</li>`;
 	});
 	uploadResult.innerHTML = str;
 }
 
-uploadResult.addEventListener('click', e=>{
+// 첨부파일 삭제 함수
+uploadResult.addEventListener('click', e => {
 	if(e.target.tagName === 'SPAN'){
 		let targetFile = e.target.getAttribute('data-file');
-
-		fetch("/deleteFile",{
-			method: 'post',
-			body : targetFile,
-			headers : {
-				'Content-type' : 'text/plain'
-			}
-			
-		})
+		
+		fetch(`/deleteFile`, 
+				{
+					method : 'post',
+					body : targetFile,
+					headers : {
+						'Content-type' : 'text/plain',
+					},
+				}
+			)
 			.then(response => response.text())
-			.then(result =>{
-				let targetLi = e.target.closest('li');
+			.then( result => {
 				console.log(result);
+				
+				// 실제 업로드 파일 삭제 후 해당 태그 까지 삭제
+				let targetLi = e.target.closest("li");
 				targetLi.remove();
+				
 			})
-			.catch(err=>console.log(err));
-
-
+			.catch(err => console.log(err));
+		
 	}
 	
-	
 });
-
-
-
-
-
-
-
-
 
 
 

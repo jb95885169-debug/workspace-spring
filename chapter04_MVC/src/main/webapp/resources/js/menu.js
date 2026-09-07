@@ -1,17 +1,14 @@
-document.querySelectorAll('.header a').forEach(a=>{
+document.querySelectorAll('.header a').forEach(a => {
 	a.addEventListener('click', e=>{
 		e.preventDefault();
 		
 		let menu = e.target.getAttribute('href');
 		
-		console.log(menu);
-
 		if(menu === 'mainPage'){
 			location.href = '/';
 		}else if(menu === 'boardList'){
 			location.href = '/board/list';
 		}
-
 	});
 });
 
@@ -21,12 +18,12 @@ function setStorageData(pageNum, amount){
 		pageNum : pageNum,
 		amount : amount
 	};
-	localStorage.setItem('page_data', JSON.stringify(pageData));// JSON.stringify(pageData)어떠한 데이터를 제이슨으로 바꿔주는코드 
+	localStorage.setItem('page_data', JSON.stringify(pageData));
+}
+function getStorageData(){
+	return JSON.parse( localStorage.getItem('page_data') );
 }
 
-function getStorageData(){
-	return JSON.parse( localStorage.getItem('page_data'));	// 
-}
 
 
 

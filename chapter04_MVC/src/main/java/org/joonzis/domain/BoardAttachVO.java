@@ -13,3 +13,4 @@ public class BoardAttachVO {
 	private String fileName;
 	private int bno;
 }
+

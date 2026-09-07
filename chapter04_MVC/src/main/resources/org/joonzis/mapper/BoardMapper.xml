@@ -5,60 +5,68 @@
 <mapper namespace="org.joonzis.mapper.BoardMapper">
 
 	<select id="getList" resultType="org.joonzis.domain.BoardVO">
-			
-	<![CDATA[
-	         SELECT bno, title, content, writer, regdate, replycnt
-	         FROM (
-	             SELECT rownum rn, bno, title, content, writer, regdate, replycnt
-	             FROM (
-	                 SELECT bno, title, content, writer, regdate, replycnt
-	                 FROM tbl_board
-	                 ORDER BY bno DESC
-	             )
-	             WHERE rownum <= #{pageNum} * #{amount}
-	         )
-	         WHERE rn > (#{pageNum} - 1) * #{amount}
-	      ]]>
+		<![CDATA[
+			SELECT bno, title, content, writer, regdate, replycnt
+			FROM (
+			    SELECT rownum rn, bno, title, content, writer, regdate, replycnt
+			    FROM (
+			        SELECT bno, title, content, writer, regdate, replycnt
+			        FROM tbl_board
+			        ORDER BY bno DESC
+			    )
+			    WHERE rownum <= #{pageNum} * #{amount}
+			)
+			WHERE rn > (#{pageNum} - 1) * #{amount}
+		]]>
 	</select>
 	<insert id="insert">
-		insert into tbl_board
-		values(
-			seq_board.nextval,
+		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+			SELECT seq_board.nextval FROM dual
+		</selectKey>
+	
+		INSERT INTO TBL_BOARD(bno, title, content, writer)
+		VALUES(
+			<!-- seq_board.nextval, -->
+			#{bno},
 			#{title},
 			#{content},
-			#{writer},
-			sysdate,
-			sysdate,
-			0
+			#{writer}
 		)
 	</insert>
 	<select id="read" resultType="org.joonzis.domain.BoardVO">
-		select * from tbl_board where bno = #{bno}
+		SELECT * FROM TBL_BOARD WHERE BNO=#{bno}
 	</select>
-	<delete id="delete"  >
-		delete tbl_board where bno = #{bno}
+	<delete id="delete">
+		DELETE FROM TBL_BOARD WHERE BNO=#{bno}
 	</delete>
 	<update id="update">
-		update tbl_board
-		set 
-			title = #{title},
-			content = #{content},
-			writer = #{writer},
-			updatedate = sysdate
-		where
-			bno = #{bno}
+		UPDATE TBL_BOARD
+		SET
+			TITLE = #{title},
+			CONTENT = #{content},
+			WRITER = #{writer},
+			UPDATEDATE = sysdate
+		WHERE
+			BNO=#{bno}
 	</update>
 	<select id="getTotal" resultType="int">
-		select count(*) from tbl_board
+		SELECT COUNT(*) FROM TBL_BOARD
 	</select>
 	<update id="updateReplyCnt">
-		UPDATE TBL_BOARD
-		SET 
+		UPDATE TBL_BOARD 
+		SET
 			REPLYCNT = REPLYCNT + #{amount}
 		WHERE
 			BNO = #{bno}
 	</update>
+	
 	<select id="getBno" resultType="int">
-		SELECT seq_board.currval FROM dual
+		select seq_board.currval from dual
 	</select>
 </mapper>
+
+
+
+
+
+

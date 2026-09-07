@@ -3,38 +3,55 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.joonzis.mapper.ReplyMapper">
-	<!-- 댓글 읽기 -->
-	<select id="read" parameterType="int" resultType="org.joonzis.domain.ReplyVO">
-		select * from tbl_reply where rno = #{rno}
-	</select>
-	<!-- 댓글 추가 -->
+	<!-- 댓글 추가  -->
 	<insert id="insert">
-		insert into tbl_reply
-		values(
+		INSERT INTO TBL_REPLY(rno, bno, reply, replyer)
+		VALUES(
 			seq_reply.nextval,
 			#{bno},
 			#{reply},
-			#{replyer},
-			sysdate,
-			sysdate
+			#{replyer}
 		)
 	</insert>
+	
 	<!-- 댓글 목록 -->
-	<select id="getList" resultType="org.joonzis.domain.ReplyVO">
-		select * from tbl_reply where bno = #{bno} order by rno asc
+	<select id="getList" 
+			parameterType="int" 
+			resultType="org.joonzis.domain.ReplyVO">
+		SELECT *
+		FROM TBL_REPLY
+		WHERE BNO=#{bno}
+		ORDER BY RNO ASC
 	</select>
+	
+	<!-- 댓글 읽기 -->
+	<select id="read"
+			parameterType="int" 
+			resultType="org.joonzis.domain.ReplyVO">
+		SELECT *
+		FROM TBL_REPLY
+		WHERE RNO=#{rno}
+	</select>
+	
 	<!-- 댓글 삭제 -->
-	<delete id="delete"  >
-		delete tbl_reply where rno = #{rno}
+	<delete id="delete">
+		DELETE FROM TBL_REPLY WHERE RNO=#{rno}
 	</delete>
+	
 	<!-- 댓글 수정 -->
 	<update id="update">
-		update tbl_reply
-		set 
-			reply = #{reply},
+		UPDATE TBL_REPLY
+		SET
+			reply=#{reply},
 			updatedate = sysdate
-		where
-			rno = #{rno}
+		WHERE
+			rno=#{rno}
 	</update>
 
 </mapper>
+
+
+
+
+
+
