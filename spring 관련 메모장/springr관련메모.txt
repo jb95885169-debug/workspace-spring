@@ -238,3 +238,46 @@ C:\dev\images\java.jpg
 </filter-mapping>
 
 
+
+<!-- 
+		표현식
+		- hasRole([role])				: 해당 권한이 있으면 true
+		  hasAuthority([authority])
+		- hasAnyRole([role])			: 여러 권한들 중에 하나라도 있으면 true
+		  hasAnyAuthority([authority])
+		- principal : 현재 사용자 정보를 의미
+		- permitAll : 모든 사용자에게 허용
+		- denyAll : 모든 사용자에게 거부
+		- isAnonymous() : 익명 사용자의 경우
+		- isAuthenticated() : 인증된 사용자라면 true
+		- idFullyAuthenticated() : Rememer-me 로 인증된 것이 아닌  사용자의 경우 true
+		
+
+
+	 -->
+
+인증 		/	권한	
+로그인		
+
+
+
+
+
+
+1. 댓글 수정 / 삭제 글쓴 사람만 할 수 있게 변경
+2. 회원가입
+	- MemberController
+	- MemberService
+ 	- MemberMapper : insert 메소드 추가
+	- 비밀번호 인코딩
+3. 로그인
+
+
+
+
+
+
+
+
+
+

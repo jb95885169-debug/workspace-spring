@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,12 +53,15 @@ public class BoardController {
 		return "board/list";
 	}
 	
+	@PreAuthorize("isAuthenticated()")// 인증된 사용자만 접근가능 
 	@GetMapping("/register")
 	public String register2() {
 		log.info("register ... ");
 		return "/board/register";
 	}
 	// 2. 게시글 등록
+	
+	@PreAuthorize("isAuthenticated()")// 인증된 사용자만 접근가능
 	@PostMapping("/register")
 	public String register(BoardVO vo) {
 		log.info("register ...  : " + vo);

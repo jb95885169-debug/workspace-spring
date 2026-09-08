@@ -21,10 +21,12 @@
 		<security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')"/>
 	
 		<!-- <security:form-login/> -->
-		<security:form-login 
+		<security:form-login login-page="/customLogin"/>
+<!-- 		<security:form-login 
 			login-page="/customLogin"
 			authentication-success-handler-ref="customLoginSuccess"/>
-			
+			authentication-success-handler-ref << 유저입장에서 지워도됨?
+ -->			
 		<security:logout 
 			logout-url="/customLogout" 
 			invalidate-session="true"

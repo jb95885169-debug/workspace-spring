@@ -30,7 +30,20 @@
 		
 	</select>
 
+	<insert id="register">
+	
+	    INSERT INTO tbl_member
+	        (userId, userPw, userName, regDate, upDatedate)
+	    VALUES
+	        (#{userId}, #{userPw}, #{userName}, SYSDATE, SYSDATE)
+	
+	</insert>
 
-
+	<insert id="registerAuth">
+	    INSERT INTO tbl_member_auth
+	        (userId, auth)
+	    VALUES
+	        (#{userId}, 'ROLE_USER')
+	</insert>
 
 </mapper>

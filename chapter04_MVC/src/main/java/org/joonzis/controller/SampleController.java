@@ -30,7 +30,7 @@ public class SampleController {
 	}
 	
 	// 어노테이션을이용한 서큐리티
-	@PreAuthorize("hasAntRole('ROLE_ADMIN', 'ROLE_MEMBER')")
+	@PreAuthorize("hasAntRole('ROLE_ADMIN', 'ROLE_MEMBER')")	// 표현식이 들어갈수있음
 	@GetMapping("/annoMember")
 	public String doMember2() {
 		log.info("로그인 멤버 어노테이션");

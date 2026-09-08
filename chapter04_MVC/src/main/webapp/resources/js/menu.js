@@ -11,6 +11,27 @@ document.querySelectorAll('.header a').forEach(a => {
 		}
 	});
 });
+document.querySelectorAll('.header-btn').forEach(a => {
+	a.addEventListener('click', e=>{
+		e.preventDefault();
+		
+		let menu = e.target.getAttribute('onclick');
+		
+		if(menu === 'loginPage()'){
+			
+			location.href = '/customLogin';
+		}else if(menu === 'joinPage()'){
+			console.log("회원가입 페이지로 ");
+			location.href = '/joinMember';
+		}
+	});
+});
+
+function loginPage(){
+	
+}
+
+
 
 // 전역에서 페이징을 사용하기 위한 함수 작성
 function setStorageData(pageNum, amount){
@@ -25,8 +46,19 @@ function getStorageData(){
 }
 
 
-
-
+// principal 객체 js로 가져오기
+let principal;
+async function getPrincipal(){
+	try {
+		const response = await fetch(`/api/currentUser.json`);
+		const userPrincipal = await response.json();
+		principal = userPrincipal.principal;
+	} catch (e) {
+		console.error("에러 : " + e );
+	}
+		
+}
+getPrincipal();
 
 
 

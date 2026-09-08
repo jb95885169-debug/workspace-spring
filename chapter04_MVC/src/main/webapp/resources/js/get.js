@@ -120,7 +120,7 @@ function registerModalPage(){
 	regReplyModalStyle();
 	// 입력 내용 초기화&불러오기
 	inputReply.value = '';
-	inputReplyer.value = '';
+	inputReplyer.value = principal.username;
 	// 모달 창 열기
 	openModal();
 }
@@ -130,7 +130,8 @@ function regReplyModalStyle(){
 	removeReplyBtn.classList.add('hide');
 	inputReplydate.closest('div').classList.add('hide');
 	addReplyBtn.classList.remove('hide');
-	inputReplyer.removeAttribute('readonly');
+//	inputReplyer.removeAttribute('readonly');
+	inputReplyer.setAttribute('readonly',true);
 }
 // 진짜 댓글 삽입 함수
 function registerReply(){
@@ -173,8 +174,20 @@ function modifyModalPage(li){
 	
 	// li 태그에서 값을 꺼내서 각 인풋에 바인딩
 	inputReply.value = li.querySelector('p').innerText;
-	inputReplyer.value = li.querySelector('strong').innerText;
+//	inputReplyer.value = li.querySelector('strong').innerText;
+	const replyer = li.querySelector('strong').innerText;
 	inputReplydate.value = li.querySelector('small').innerText;
+	
+//	console.log(li.replyer);
+//    console.log(loginUser);
+    
+    if(loginUser === replyer){
+        modifyReplyBtn.classList.remove('hide');
+        removeReplyBtn.classList.remove('hide');
+    } else {
+        modifyReplyBtn.classList.add('hide');
+        removeReplyBtn.classList.add('hide');
+    }
 }
 function modReplyModalStyle(){
 	addReplyBtn.classList.add('hide');

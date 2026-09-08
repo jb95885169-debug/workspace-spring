@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix = "sec" uri = "http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +23,10 @@
 					</tr>
 					<tr>
 						<th>작성자</th>
-						<td><input type="text" name="writer"></td>
+						<td><input type="text" 
+									name="writer"
+									value='<sec:authentication property="principal.username"/>'
+									readonly="readonly"/></td>
 					</tr>
 					<tr>
 						<th>내용</th>
