@@ -22,7 +22,10 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="org.joonzis.controller" />
+	<context:component-scan base-package="org.joonzis.service" />
 	
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+	</beans:bean>
 	
 	
 </beans:beans>

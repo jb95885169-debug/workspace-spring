@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.joonzis.mapper.UserMapper">
+
+
+	<update id="updateSubscription">
+	    UPDATE mingle_users
+	    SET 
+	        subscription_tier = #{subscriptionTier},
+	        subscription_start_at = SYSDATE,
+	        subscription_end_at = TRUNC(SYSDATE) + 30,
+	        updated_at = SYSDATE
+	    WHERE id = #{id}
+	</update>
+
+	<!-- 1. 결제 내역 저장 -->
+	<insert id="insertPayment" parameterType="org.joonzis.domain.PaymentVO">
+	    <selectKey keyProperty="id" resultType="long" order="BEFORE">
+	        SELECT seq_payments.NEXTVAL FROM DUAL
+	    </selectKey>
+	    INSERT INTO mingle_payments (id, user_id, product_id, product_name, amount, status, paid_at)
+	    VALUES (#{id}, #{userId}, #{productId}, #{productName}, #{amount}, 'PAID', SYSDATE)
+	</insert>
+	
+	<!-- 2. 구독 이력 저장 (즉시 전환 및 30일 부여) -->
+	<insert id="insertSubscription" parameterType="org.joonzis.domain.SubscriptionVO">
+	    <selectKey keyProperty="id" resultType="long" order="BEFORE">
+	        SELECT seq_subscriptions.NEXTVAL FROM DUAL
+	    </selectKey>
+	    INSERT INTO mingle_subscriptions (id, user_id, product_id, payment_id, status, start_date, end_date, created_at)
+	    VALUES (#{id}, #{userId}, #{productId}, #{paymentId}, 'ACTIVE', SYSDATE, TRUNC(SYSDATE) + 30, SYSDATE)
+	</insert>
+	
+	<!-- 3. 유저 테이블의 대표 등급 최신화 (화면 표시용 캐시 성격) -->
+	<update id="updateUserTier">
+	    UPDATE mingle_users
+	    SET subscription_tier = #{tier},
+	        updated_at = SYSDATE
+	    WHERE id = #{userId}
+	</update>
+	
+	<!-- 4. 유저의 결제/구독 내역 상세 조회 -->
+	<select id="selectPaymentHistory" resultType="org.joonzis.domain.PaymentVO">
+	    SELECT 
+	        p.id AS id,
+	        p.user_id AS userId,
+	        p.product_id AS productId,
+	        p.product_name AS productName,
+	        p.amount AS amount,
+	        p.pay_method AS payMethod,
+	        p.status AS status,
+	        TO_CHAR(p.paid_at, 'YYYY-MM-DD HH24:MI:SS') AS paidAt,
+	        s.start_date AS startDate,
+	        s.end_date AS endDate
+	    FROM mingle_payments p
+	    LEFT OUTER JOIN mingle_subscriptions s ON p.id = s.payment_id
+	    WHERE p.user_id = #{userId}
+	    ORDER BY p.paid_at DESC
+	</select>
+
+	<!-- 활성화된 구독 정보 조회 -->
+	<select id="selectActiveSubscription" resultType="org.joonzis.domain.SubscriptionVO">
+	    SELECT * FROM (
+	        SELECT id, user_id AS userId, product_id AS productId, payment_id AS paymentId, 
+	               status, start_date AS startDate, end_date AS endDate, created_at AS createdAt
+	        FROM mingle_subscriptions
+	        WHERE user_id = #{userId} AND status = 'ACTIVE'
+	        ORDER BY end_date DESC
+	    ) WHERE ROWNUM = 1
+	</select>
+	
+
+
+
+
+</mapper>
