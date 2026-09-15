@@ -17,13 +17,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    WHERE id = #{id}
 	</update>
 
-	<!-- 1. 결제 내역 저장 -->
+<!-- 1. 결제 내역 저장 -->
 	<insert id="insertPayment" parameterType="org.joonzis.domain.PaymentVO">
 	    <selectKey keyProperty="id" resultType="long" order="BEFORE">
 	        SELECT seq_payments.NEXTVAL FROM DUAL
 	    </selectKey>
-	    INSERT INTO mingle_payments (id, user_id, product_id, product_name, amount, status, paid_at)
-	    VALUES (#{id}, #{userId}, #{productId}, #{productName}, #{amount}, 'PAID', SYSDATE)
+	    INSERT INTO mingle_payments (id, user_id, product_id, product_name, amount, pay_method, status, paid_at)
+	    VALUES (#{id}, #{userId}, #{productId}, #{productName}, #{amount}, #{payMethod, jdbcType=VARCHAR}, 'PAID', SYSDATE)
 	</insert>
 	
 	<!-- 2. 구독 이력 저장 (즉시 전환 및 30일 부여) -->

@@ -15,4 +15,6 @@ public class PaymentVO {
     
     private String startDate;
     private String endDate;
+    private String payMethod;
+    
 }

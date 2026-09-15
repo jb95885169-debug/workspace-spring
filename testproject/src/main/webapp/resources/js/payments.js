@@ -1,27 +1,12 @@
 // ==========================================
-// 🎧 고객 문의 및 구독/결제 통합 로직
+// 🎧 고객 문의 및 구독/결제 정보 조회 로직 (통합본)
 // ==========================================
 
 let userTier = 'Gold';
 let currentMainTask = 'discovery';
 
-let mockPaymentHistory = [
-    {
-        merchant_uid: 'ORD20260908-0012',
-        tier: 'Gold',
-        amount: 19900,
-        pay_method: 'kakaopay',
-        paid_at: '2026-09-08 14:18:22',
-        status: 'PAID'
-    }
-];
-
-//페이지 로드 시 포트원 SDK 초기화 및 서버 구독/결제 정보 자동 불러오기
+// 페이지 로드 시 서버 구독/결제 정보 자동 불러오기
 window.addEventListener('DOMContentLoaded', () => {
-    if (window.IMP) {
-        IMP.init("imp00000000"); // 포트원 가맹점 식별코드 (테스트용)
-    }
-    
     if (typeof loadSubscriptionStatus === 'function') {
         loadSubscriptionStatus();
     }
@@ -265,7 +250,7 @@ function loadSubscriptionStatus() {
     .catch(err => console.error('구독 정보 로드 실패:', err));
 }
 
-//'결제 이력 보기' 또는 프로필의 '결제 내역' 클릭 시 호출
+// '결제 이력 보기' 또는 프로필의 '결제 내역' 클릭 시 호출
 function openPaymentHistoryModal() {
     openModal('paymentHistoryModal');
     const container = document.getElementById('paymentHistoryContainer');
@@ -273,7 +258,7 @@ function openPaymentHistoryModal() {
     
     container.innerHTML = '';
 
-    const payments = window.cachedPayDOMContentLoadedmentHistory || [];
+    const payments = window.cachedPaymentHistory || [];
 
     if (payments.length === 0) {
         container.innerHTML = `<p class="text-center text-xs text-gray-500 py-8">결제 내역이 존재하지 않습니다.</p>`;

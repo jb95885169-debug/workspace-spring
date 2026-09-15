@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.joonzis.domain.PaymentVO;
 import org.joonzis.domain.SubscriptionVO;
-import org.joonzis.service.UserService; // 패키지 경로에 맞게 임포트
+import org.joonzis.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SubscriptionController {
 
     @Autowired
-    private UserService userService; // ★ 서비스 주입 추가
+    private UserService userService;
 
     @GetMapping("")
     public String subscription() {
@@ -33,18 +33,23 @@ public class SubscriptionController {
         return "subscription/paymentHistory";
     }
 
+    // [수정] 포트원 결제 성공 후 데이터를 받아 처리하는 엔드포인트
     @PostMapping(value = "/pay/process", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> processMockPayment(@RequestBody Map<String, Object> requestMap) {
+    public ResponseEntity<String> processPayment(@RequestBody Map<String, Object> requestMap) {
         try {
             String tier = (String) requestMap.get("tier"); // 'Gold' 또는 'Platinum'
             Number amountNum = (Number) requestMap.get("amount");
             long amount = amountNum != null ? amountNum.longValue() : 0;
             String merchantUid = (String) requestMap.get("merchantUid");
+            String impUid = (String) requestMap.get("impUid"); // ★ 포트원 고유 결제 번호 추가 수신
             
-            Long userId = 1L; // 임시 테스트용 유저 ID (로그인 유저 ID로 대체)
+            Long userId = 1L; // 임시 테스트용 유저 ID
             
-            // 서비스 단에서 결제 정보(Payments), 구독 정보(Subscriptions), 유저 등급을 한 번에 처리
+            // 필요하다면 impUid를 로그로 찍어보거나 결제 검증에 활용할 수 있습니다.
+            System.out.println("포트원 결제 승인 완료 - impUid: " + impUid + ", merchantUid: " + merchantUid);
+            
+            // 기존에 잘 만들어 둔 서비스 호출 (DB에 payments, subscriptions 기록)
             userService.processSubscriptionPayment(userId, tier, amount, merchantUid);
             
             return ResponseEntity.ok("success");
@@ -54,13 +59,10 @@ public class SubscriptionController {
         }
     }
     
-    
- // 수정 전: @GetMapping(value = "/subscription/info", ...)
-    // 수정 후: 아래처럼 /info 로만 변경
     @GetMapping(value = "/info", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getSubscriptionInfo() {
-        Long userId = 1L; // 테스트 유저 ID
+        Long userId = 1L;
         
         SubscriptionVO subInfo = userService.getActiveSubscription(userId);
         List<PaymentVO> paymentList = userService.getPaymentHistory(userId);
