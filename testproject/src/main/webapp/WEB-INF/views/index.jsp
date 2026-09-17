@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -33,11 +34,11 @@
     </div>
 
     <div class="flex items-center space-x-4">
-        <!-- 구독 등급 노출 -->
-        <div class="bg-[#1b1b26] border border-[#d4af37]/40 px-3.5 py-1.5 rounded-full flex items-center space-x-2 shadow-md cursor-pointer" onclick="switchTab('subscription')">
-            <span class="text-[11px] text-gray-400">현재 등급:</span>
-            <span class="text-xs font-bold text-[#d4af37]" id="currentTierDisplay">👑 Gold 멤버</span>
-        </div>
+		<!-- 상단 메뉴바 현재 등급 노출부 -->
+		<div class="bg-[#1b1b26] border border-[#d4af37]/40 px-3.5 py-1.5 rounded-full flex items-center space-x-2 shadow-md cursor-pointer" onclick="switchTab('subscription')">
+		    <span class="text-[11px] text-gray-400">현재 등급:</span>
+		    <span class="text-xs font-bold text-[#d4af37]" id="currentTierDisplay">👑 ${not empty activeSubscription ? activeSubscription.tier : 'Basic'} 멤버</span>
+		</div>
         
         <div class="relative">
             <button onclick="toggleProfilePopup(event)" class="flex items-center space-x-2 bg-[#1b1b26] hover:bg-[#252536] border border-[#d4af37]/40 px-3.5 py-1.5 rounded-full transition shadow-md">
@@ -115,24 +116,25 @@
             </div>
         </div>
 
-        <!-- 탭 2: 구독 & 결제 관리 (담당 화면 메인) -->
-        <div id="viewSubscription" class="flex-1 overflow-y-auto p-8 hidden">
-            <div class="max-w-5xl mx-auto space-y-10 pb-12">
-                <!-- 현재 구독 상단 배너 -->
-                <div class="bg-gradient-to-r from-[#16161f] to-[#1f1f2e] border border-[#d4af37]/40 rounded-3xl p-6 shadow-xl flex justify-between items-center">
-                    <div>
-                        <span class="text-xs text-[#d4af37] font-bold tracking-wider uppercase">현재 이용 중인 멤버십</span>
-                        <h2 class="text-2xl font-serif font-bold text-white mt-1">👑 <span id="bannerTierName">Gold</span> 멤버십</h2>
-                        <p class="text-xs text-gray-400 mt-1">자동 결제 예정일: <span class="text-gray-200">2026-10-10</span></p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <button onclick="openModal('paymentHistoryModal'); renderPaymentHistory();" class="px-4 py-2.5 bg-[#121218] hover:bg-[#20202e] border border-[#262638] text-xs text-gray-300 font-semibold rounded-xl transition">📜 결제 이력 보기</button>
-                        <div class="bg-[#0b0b10] border border-[#d4af37]/30 px-6 py-3 rounded-2xl text-center shadow-inner">
-                            <span class="text-xs text-gray-400 block">남은 구독 기간</span>
-                            <span class="text-xl font-bold text-[#d4af37]" id="remainingDaysDisplay">D-30일</span>
-                        </div>
-                    </div>
-                </div>
+		<!-- 탭 2: 구독 & 결제 관리 (담당 화면 메인) -->
+		<div id="viewSubscription" class="flex-1 overflow-y-auto p-8 hidden">
+		    <div class="max-w-5xl mx-auto space-y-10 pb-12">
+		        <!-- 현재 구독 상단 배너 -->
+		        <div class="bg-gradient-to-r from-[#16161f] to-[#1f1f2e] border border-[#d4af37]/40 rounded-3xl p-6 shadow-xl flex justify-between items-center">
+		            <div>
+		                <span class="text-xs text-[#d4af37] font-bold tracking-wider uppercase">현재 이용 중인 멤버십</span>
+		                <!-- 서버에서 넘어온 activeSubscription.tier 값이 있으면 출력, 없으면 Basic/Gold 처리 -->
+		                <h2 class="text-2xl font-serif font-bold text-white mt-1">👑 <span id="bannerTierName">${not empty activeSubscription ? activeSubscription.tier : 'Basic'}</span> 멤버십</h2>
+						<p class="text-xs text-gray-400 mt-1">구독 만료일: <span class="text-gray-200" id="bannerAutoDate"><c:choose><c:when test="${not empty activeSubscription.endDate}"><fmt:formatDate value="${activeSubscription.endDate}" pattern="yyyy-MM-dd"/></c:when><c:otherwise> </c:otherwise></c:choose></span></p>
+		            </div>
+		            <div class="flex items-center space-x-3">
+		                <button onclick="openModal('paymentHistoryModal'); renderPaymentHistory();" class="px-4 py-2.5 bg-[#121218] hover:bg-[#20202e] border border-[#262638] text-xs text-gray-300 font-semibold rounded-xl transition">📜 결제 이력 보기</button>
+		                <div class="bg-[#0b0b10] border border-[#d4af37]/30 px-6 py-3 rounded-2xl text-center shadow-inner">
+		                    <span class="text-xs text-gray-400 block">남은 구독 기간</span>
+		                    <span class="text-xl font-bold text-[#d4af37]" id="remainingDaysDisplay">D-${not empty activeSubscription.remainingDays ? activeSubscription.remainingDays : '0'}일</span>
+		                </div>
+		            </div>
+		        </div>
 
                 <div class="text-center space-y-2 mb-6">
                     <h1 class="text-3xl font-serif font-bold text-[#d4af37]">MIRA Membership 플랜</h1>
@@ -149,7 +151,6 @@
                             <li class="flex items-center space-x-2"><span>✔️</span> <span>매일 10명 프로필 탐색</span></li>
                             <li class="flex items-center space-x-2"><span>✔️</span> <span>기본 좋아요 발송</span></li>
                         </ul>
-                        <button onclick="changeToBasic()" class="w-full py-3 rounded-xl bg-[#1f1f2e] hover:bg-[#2a2a3c] text-white font-bold text-sm transition">Basic 무료 전환</button>
                     </div>
 
                     <!-- GOLD -->

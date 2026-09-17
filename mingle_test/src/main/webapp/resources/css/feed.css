@@ -1,0 +1,441 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    background: #f5f6f8;
+
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+
+/* =========================
+   전체
+   ========================= */
+
+.feed-container {
+    width: 100%;
+    max-width: 560px;
+    min-height: 100vh;
+
+    margin: 0 auto;
+    padding-bottom: 40px;
+
+    background: #fff;
+}
+
+.feed-header {
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.feed-header h2 {
+    margin: 0;
+
+    font-size: 21px;
+}
+
+.feed-header button {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    background: transparent;
+
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   글쓰기
+   ========================= */
+
+.feed-form {
+    padding: 16px 20px;
+
+    border-bottom: 8px solid #f5f6f8;
+}
+
+.feed-form input[type="text"],
+.feed-form select,
+.feed-form textarea {
+    width: 100%;
+
+    margin-bottom: 8px;
+    padding: 10px 12px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.feed-form textarea {
+    resize: vertical;
+}
+
+.feed-form input[type="file"] {
+    margin-bottom: 8px;
+
+    font-size: 13px;
+}
+
+/* 수정할 때만 보이는 "지금 사진 빼기" */
+.remove-image-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-bottom: 8px;
+
+    color: #888;
+    font-size: 13px;
+}
+.remove-image-row[hidden] {
+    display: none !important;
+}
+
+.remove-image-row input {
+    width: auto;
+    margin: 0;
+}
+
+
+.feed-form-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+#feedSubmitBtn {
+    flex: 1;
+
+    padding: 11px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ff4f81;
+    color: #fff;
+
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#feedSubmitBtn:hover {
+    background: #ff336f;
+}
+
+#feedSubmitBtn:disabled {
+    background: #ddd;
+    cursor: default;
+}
+
+#feedCancelBtn {
+    padding: 11px 18px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    background: #fff;
+    color: #666;
+
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   피드 카드
+   ========================= */
+
+.feed-list {
+    padding: 0 20px;
+
+    color: #aaa;
+    font-size: 13px;
+}
+
+.feed-card {
+    padding: 16px 0;
+
+    border-bottom: 1px solid #f3f3f3;
+
+    color: #222;
+}
+
+.feed-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 8px;
+}
+
+.feed-writer {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.feed-category {
+    padding: 2px 8px;
+
+    border-radius: 999px;
+
+    background: #fff0f3;
+    color: #ff5c7a;
+
+    font-size: 11px;
+}
+
+/* 수정 / 삭제 버튼 묶음 (관리자는 삭제만 보인다) */
+.feed-actions {
+    display: flex;
+    gap: 6px;
+
+    margin-left: auto;
+}
+
+.feed-edit-btn {
+    border: none;
+    background: transparent;
+
+    color: #bbb;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.feed-delete-btn {
+    border: none;
+    background: transparent;
+
+    color: #bbb;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.feed-edit-btn:hover,
+.feed-delete-btn:hover {
+    color: #ff4f81;
+}
+
+.feed-title {
+    margin-bottom: 6px;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.feed-content {
+    color: #444;
+    font-size: 14px;
+    line-height: 1.5;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.feed-image {
+    display: block;
+
+    width: 100%;
+    max-height: 400px;
+
+    margin-top: 10px;
+
+    border-radius: 10px;
+
+    object-fit: cover;
+}
+
+
+/* =========================
+   좋아요 / 댓글 줄
+   ========================= */
+
+.feed-bottom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+.feed-like-btn,
+.feed-comment-btn {
+    padding: 5px 10px;
+
+    border: 1px solid #eee;
+    border-radius: 999px;
+
+    background: #fff;
+    color: #666;
+
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.feed-like-btn.liked {
+    border-color: #ff5c7a;
+
+    background: #fff0f3;
+    color: #ff5c7a;
+}
+
+.feed-time {
+    margin-left: auto;
+
+    color: #aaa;
+    font-size: 11px;
+}
+
+
+/* =========================
+   댓글
+   ========================= */
+
+.comment-box {
+    margin-top: 12px;
+    padding: 12px;
+
+    border-radius: 10px;
+
+    background: #fafafa;
+}
+
+.comment-list {
+    color: #aaa;
+    font-size: 12px;
+}
+
+.comment-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 6px 0;
+
+    color: #333;
+}
+
+.comment-nickname {
+    flex-shrink: 0;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.comment-content {
+    flex: 1;
+
+    font-size: 13px;
+    word-break: break-word;
+}
+
+.comment-edit-btn {
+    border: none;
+    background: transparent;
+
+    color: #bbb;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.comment-delete-btn {
+    border: none;
+    background: transparent;
+
+    color: #bbb;
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+.comment-edit-btn:hover,
+.comment-delete-btn:hover {
+    color: #ff4f81;
+}
+
+
+/* 댓글 수정 중 */
+.comment-edit-input {
+    flex: 1;
+
+    padding: 6px 8px;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    font-size: 13px;
+}
+
+.comment-save-btn {
+    padding: 6px 10px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #ff4f81;
+    color: #fff;
+
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.comment-cancel-btn {
+    padding: 6px 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    background: #fff;
+    color: #666;
+
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.comment-form {
+    display: flex;
+    gap: 6px;
+
+    margin-top: 8px;
+}
+
+.comment-input {
+    flex: 1;
+
+    padding: 8px 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    font-size: 13px;
+}
+
+.comment-add-btn {
+    padding: 8px 14px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ff4f81;
+    color: #fff;
+
+    font-size: 13px;
+    cursor: pointer;
+}

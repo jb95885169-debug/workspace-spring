@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.joonzis.mapper.UserMapper">
-
 
 	<update id="updateSubscription">
 	    UPDATE mingle_users
@@ -17,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    WHERE id = #{id}
 	</update>
 
-<!-- 1. 결제 내역 저장 -->
+	<!-- 1. 결제 내역 저장 -->
 	<insert id="insertPayment" parameterType="org.joonzis.domain.PaymentVO">
 	    <selectKey keyProperty="id" resultType="long" order="BEFORE">
 	        SELECT seq_payments.NEXTVAL FROM DUAL
@@ -26,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    VALUES (#{id}, #{userId}, #{productId}, #{productName}, #{amount}, #{payMethod, jdbcType=VARCHAR}, 'PAID', SYSDATE)
 	</insert>
 	
-	<!-- 2. 구독 이력 저장 (즉시 전환 및 30일 부여) -->
+	<!-- 2. 구독 이력 저장 -->
 	<insert id="insertSubscription" parameterType="org.joonzis.domain.SubscriptionVO">
 	    <selectKey keyProperty="id" resultType="long" order="BEFORE">
 	        SELECT seq_subscriptions.NEXTVAL FROM DUAL
@@ -35,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    VALUES (#{id}, #{userId}, #{productId}, #{paymentId}, 'ACTIVE', SYSDATE, TRUNC(SYSDATE) + 30, SYSDATE)
 	</insert>
 	
-	<!-- 3. 유저 테이블의 대표 등급 최신화 (화면 표시용 캐시 성격) -->
+	<!-- 3. 유저 테이블의 대표 등급 최신화 -->
 	<update id="updateUserTier">
 	    UPDATE mingle_users
 	    SET subscription_tier = #{tier},
@@ -62,19 +60,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    ORDER BY p.paid_at DESC
 	</select>
 
-	<!-- 활성화된 구독 정보 조회 -->
+	<!-- 5. 아직 만료되지 않은 구독 중 가장 최근 구독 정보 조회 -->
 	<select id="selectActiveSubscription" resultType="org.joonzis.domain.SubscriptionVO">
 	    SELECT * FROM (
-	        SELECT id, user_id AS userId, product_id AS productId, payment_id AS paymentId, 
-	               status, start_date AS startDate, end_date AS endDate, created_at AS createdAt
-	        FROM mingle_subscriptions
-	        WHERE user_id = #{userId} AND status = 'ACTIVE'
-	        ORDER BY end_date DESC
+	        SELECT 
+	            id,
+	            user_id AS userId,
+	            status, 
+	            start_date AS startDate, 
+	            -- 종료일을 자정 기준으로 깔끔하게 맞춤
+	            TRUNC(end_date) AS endDate,
+	            -- 오늘 날짜와 만료일(자정 기준)의 남은 일수 계산
+	            TRUNC(TRUNC(end_date) - TRUNC(SYSDATE)) AS remainingDays,
+	            CASE 
+	                WHEN product_id = 1 THEN 'Gold' 
+	                ELSE 'Platinum' 
+	            END AS tier
+        FROM mingle_subscriptions
+        WHERE user_id = #{userId}
+          AND status = 'ACTIVE'
+          AND TRUNC(end_date) >= TRUNC(SYSDATE)
+	        ORDER BY id DESC
 	    ) WHERE ROWNUM = 1
 	</select>
-	
-
-
-
 
 </mapper>

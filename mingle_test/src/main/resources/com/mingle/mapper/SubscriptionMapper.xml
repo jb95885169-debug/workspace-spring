@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mingle.mapper.SubscriptionMapper">
+
+    <!-- ================================================================
+         구독 상품 (mingle_products)
+         BASIC은 무료 기본 등급이라 상품이 없다.
+         mapUnderscoreToCamelCase를 쓰지 않으므로 별칭으로 맞춘다.
+         ================================================================ -->
+
+    <select id="selectActiveProducts" resultType="com.mingle.dto.ProductResponse">
+        SELECT
+            id            AS productId,
+            name,
+            tier,
+            description,
+            price,
+            duration_days AS durationDays
+        FROM mingle_products
+        WHERE is_active = 1
+        ORDER BY tier, duration_days
+    </select>
+
+
+    <!-- 결제할 상품 (판매 중인 것만, 가격은 여기서 읽어 클라이언트 값을 믿지 않는다) -->
+    <select id="selectActiveProduct" parameterType="int" resultType="com.mingle.vo.ProductVO">
+        SELECT
+            id,
+            name,
+            tier,
+            description,
+            price,
+            duration_days AS durationDays
+        FROM mingle_products
+        WHERE id        = #{productId}
+          AND is_active = 1
+    </select>
+
+
+    <!-- 관리자 상품 관리용: 판매 중지 여부와 무관하게 상품 하나를 조회한다. -->
+    <select id="selectProductById" parameterType="int" resultType="com.mingle.vo.ProductVO">
+        SELECT
+            id,
+            name,
+            tier,
+            description,
+            price,
+            duration_days AS durationDays
+        FROM mingle_products
+        WHERE id = #{productId}
+    </select>
+
+
+    <!--
+        상품 원본만 수정한다.
+        mingle_payments.product_name / amount는 결제 시점의 스냅샷이므로 변경하지 않는다.
+    -->
+    <update id="updateProductPriceAndDescription">
+        UPDATE mingle_products
+        SET price       = #{price},
+            description = #{description, jdbcType=VARCHAR}
+        WHERE id = #{productId}
+          AND #{price} &gt;= 0
+    </update>
+
+
+    <!-- ================================================================
+         결제 / 구독 (가짜 결제라 INSERT 시 바로 PAID / ACTIVE)
+         ================================================================ -->
+
+    <!-- 상품명과 금액은 결제 시점 값을 남긴다 (나중에 상품이 바뀌어도 내역은 그대로) -->
+    <insert id="insertPayment" parameterType="com.mingle.vo.PaymentVO">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            SELECT seq_mingle_payments.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO mingle_payments (
+            id, user_id, product_id, product_name, amount, status, paid_at
+        )
+        VALUES (
+            #{id},
+            #{userId},
+            #{productId},
+            #{productName},
+            #{amount},
+            'PAID',
+            SYSDATE
+        )
+    </insert>
+
+
+    <!--
+        구독 생성 (결제와 같은 트랜잭션)
+        startDate : 바로 시작하면 지금, 같은 등급을 또 사면 기존 구독의 종료일
+        종료일은 startDate + 이용 기간 (ck_subscriptions_period: end_date > start_date)
+    -->
+    <insert id="insertSubscription" parameterType="com.mingle.vo.SubscriptionVO">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            SELECT seq_mingle_subscriptions.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO mingle_subscriptions (
+            id, user_id, product_id, payment_id, status, start_date, end_date, created_at
+        )
+        VALUES (
+            #{id},
+            #{userId},
+            #{productId},
+            #{paymentId},
+            'ACTIVE',
+            #{startDate},
+            #{endDate},
+            SYSDATE
+        )
+    </insert>
+
+
+    <!--
+        이용 중인 구독 즉시 종료 (업그레이드할 때)
+        남은 기간을 새 등급으로 옮겨 주므로 옛 구독은 여기서 끝낸다.
+        ck_subscriptions_period(end_date > start_date)에 걸리지 않도록 최소 1분은 남긴다.
+    -->
+    <update id="updateSubscriptionEnded" parameterType="int">
+        UPDATE mingle_subscriptions
+        SET status       = 'CANCELLED',
+            cancelled_at = SYSDATE,
+            end_date     = GREATEST(SYSDATE, start_date + 1/1440)
+        WHERE user_id = #{userId}
+          AND status IN ('ACTIVE', 'CANCELLED')
+          AND SYSDATE BETWEEN start_date AND end_date
+    </update>
+
+
+    <!-- ================================================================
+         현재 등급 / 내역
+         ================================================================ -->
+
+    <!--
+        지금 유효한 구독 (없으면 null → 서비스가 BASIC으로 본다)
+        CANCELLED(해지 예약)도 종료일까지는 이용할 수 있으므로 포함한다.
+        기간이 겹치면 높은 등급을 먼저 본다 (골드가 남아 있어도 플래티넘을 샀으면 플래티넘).
+        같은 등급끼리는 늦게 끝나는 것을 쓴다.
+    -->
+    <select id="selectCurrentSubscription" parameterType="int"
+            resultType="com.mingle.dto.SubscriptionResponse">
+        SELECT *
+        FROM (
+            SELECT
+                pr.tier,
+                pr.name          AS productName,
+                s.status,
+                s.start_date     AS startDate,
+                s.end_date       AS endDate,
+                pr.price,
+                pr.duration_days AS durationDays
+            FROM mingle_subscriptions s
+            JOIN mingle_products pr
+              ON pr.id = s.product_id
+            WHERE s.user_id = #{userId}
+              AND s.status IN ('ACTIVE', 'CANCELLED')
+              AND SYSDATE BETWEEN s.start_date AND s.end_date
+            ORDER BY
+                CASE pr.tier
+                    WHEN 'PLATINUM' THEN 0
+                    WHEN 'GOLD'     THEN 1
+                    ELSE 2
+                END,
+                s.end_date DESC
+        )
+        WHERE ROWNUM = 1
+    </select>
+
+
+    <select id="selectPaymentHistory" parameterType="int"
+            resultType="com.mingle.dto.PaymentHistoryResponse">
+        SELECT
+            p.product_name AS productName,
+            p.amount,
+            p.status,
+            p.paid_at      AS paidAt,
+            s.start_date   AS startDate,
+            s.end_date     AS endDate
+        FROM mingle_payments p
+        JOIN mingle_subscriptions s
+          ON s.payment_id = p.id
+        WHERE p.user_id = #{userId}
+        ORDER BY p.paid_at DESC
+    </select>
+
+</mapper>

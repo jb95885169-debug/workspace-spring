@@ -14,6 +14,6 @@ public class SubscriptionVO {
     private Date endDate;
     private Date cancelledAt;
     private Date createdAt;
-
- 
+    private String tier;
+    private Integer remainingDays;
 }

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mingle.mapper.ChatMessageMapper">
+
+    <!-- ================================================================
+         채팅 메시지 (조회: ChatMessageResponse, 저장: vo.ChatMessageVO)
+         채팅 목록 항목은 MatchMapper.selectMatches / selectMatchChat
+         ================================================================ -->
+    <resultMap id="chatMessageMap" type="com.mingle.dto.ChatMessageResponse">
+        <id     column="id"           property="id"/>
+        <result column="match_id"     property="matchId"/>
+        <result column="sender_id"    property="senderId"/>
+        <result column="content"      property="content"/>
+        <result column="message_type" property="messageType"/>
+        <result column="file_url"     property="fileUrl"/>
+        <result column="is_read"      property="isRead"/>
+        <result column="created_at"   property="createdAt"/>
+    </resultMap>
+
+    <sql id="messageColumns">
+        id,
+        match_id,
+        sender_id,
+        content,
+        message_type,
+        file_url,
+        is_read,
+        created_at
+    </sql>
+
+
+    <!-- 메시지 저장 (created_at은 DB 시각) -->
+    <insert id="insertMessage" parameterType="com.mingle.vo.ChatMessageVO">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            SELECT seq_mingle_chat_messages.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO mingle_chat_messages (
+            id, match_id, sender_id, content, message_type, file_url, is_read, created_at
+        )
+        VALUES (
+            #{id},
+            #{matchId},
+            #{senderId},
+            #{content, jdbcType=VARCHAR},
+            #{messageType},
+            #{fileUrl, jdbcType=VARCHAR},
+            #{isRead},
+            SYSDATE
+        )
+    </insert>
+
+
+    <!--
+        메시지 limit개씩 조회 (lastMessageId보다 이전 것, 0이면 가장 최근부터)
+
+        안쪽 : 최신순으로 정렬한 뒤 ROWNUM으로 limit개만 자른다
+               (ROWNUM은 정렬 전에 매겨지므로 이 순서를 지켜야 "최근 N개"가 나온다)
+        바깥 : 화면에 붙이는 순서대로 오래된 순으로 다시 정렬한다
+               인라인 뷰의 정렬은 바깥까지 보장되지 않으므로 여기서 한 번 더 지정한다
+    -->
+    <select id="selectMessages" resultMap="chatMessageMap">
+        SELECT *
+        FROM (
+            SELECT <include refid="messageColumns"/>
+            FROM mingle_chat_messages
+            WHERE match_id = #{matchId}
+            <if test="lastMessageId > 0">
+              AND id &lt; #{lastMessageId}
+            </if>
+            ORDER BY id DESC
+        )
+        WHERE ROWNUM &lt;= #{limit}
+        ORDER BY id
+    </select>
+
+
+    <!-- 채팅방 전체 메시지 (오래된 순) - 사용 안 함 (메시지 조회는 selectMessages로 나눠서) -->
+    <select id="selectAllMessages" parameterType="int" resultMap="chatMessageMap">
+        SELECT <include refid="messageColumns"/>
+        FROM mingle_chat_messages
+        WHERE match_id = #{matchId}
+        ORDER BY created_at ASC
+    </select>
+
+
+    <!-- 상대가 보낸 안 읽은 메시지를 읽음 처리 (userId = 읽는 회원) -->
+    <update id="updateMessagesRead">
+        UPDATE mingle_chat_messages
+        SET is_read = 1
+        WHERE match_id   = #{matchId}
+          AND sender_id != #{userId}
+          AND is_read    = 0
+    </update>
+
+
+    <!-- 이 첨부 파일을 쓰는 메시지가 있는지 (쓰이지 않는 파일 정리용) -->
+    <select id="existsFileUrl" parameterType="string" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM mingle_chat_messages
+        WHERE file_url = #{fileUrl}
+    </select>
+
+
+    <!-- 채팅방 메시지 전체 삭제 - 사용 안 함 (매칭 나가기는 상태만 바꾸고 메시지는 남겨 둠) -->
+    <delete id="deleteMessages">
+        DELETE FROM mingle_chat_messages
+        WHERE match_id = #{matchId}
+    </delete>
+
+</mapper>

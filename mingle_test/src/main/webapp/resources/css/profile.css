@@ -1,0 +1,83 @@
+/* =========================================================
+   프로필 수정 화면 (auth.css 위에 얹는다)
+   ========================================================= */
+
+/* 관심사 선택 칩은 interest.css에 있다 (가입 화면과 공용) */
+
+
+/* =========================
+   등록된 사진
+   ========================= */
+
+.photo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.photo-item {
+    position: relative;
+
+    width: 110px;
+}
+
+.photo-item img {
+    width: 110px;
+    height: 140px;
+
+    object-fit: cover;
+
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+
+.photo-item.primary img {
+    border: 2px solid #ff4f81;
+}
+
+.photo-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+
+    padding: 2px 7px;
+
+    border-radius: 999px;
+
+    background: #ff4f81;
+    color: #fff;
+
+    font-size: 11px;
+}
+
+.photo-actions {
+    display: flex;
+    gap: 5px;
+
+    margin-top: 5px;
+}
+
+.photo-actions button {
+    flex: 1;
+
+    margin: 0;
+    padding: 5px 0;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    background: #fff;
+    color: #666;
+
+    font-size: 12px;
+}
+
+.photo-actions button:hover {
+    background: #f7f7f7;
+    color: #ff4f81;
+}
+
+
+/* 임시로 올린 사진 미리보기는 photoUpload.css에 있다 (가입 / 피드와 공용) */

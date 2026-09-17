@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mingle.mapper.MatchMapper">
+
+    <!-- ================================================================
+         채팅 목록 항목 (MatchChatResponse)
+         ================================================================ -->
+    <resultMap id="matchChatResponseMap" type="com.mingle.dto.MatchChatResponse">
+        <id     column="match_id"          property="matchId"/>
+        <result column="user_id"           property="userId"/>
+        <result column="nickname"          property="nickname"/>
+        <result column="gender"            property="gender"/>
+        <result column="age"               property="age"/>
+        <result column="height"            property="height"/>
+        <result column="job"               property="job"/>
+        <result column="region"            property="region"/>
+        <result column="interests"         property="interests"/>
+        <result column="photo_url"         property="photoUrl"/>
+        <result column="last_message"      property="lastMessage"/>
+        <result column="last_message_at"   property="lastMessageAt"/>
+        <result column="unread_count"      property="unreadCount"/>
+        <result column="read_only"         property="readOnly"/>
+    </resultMap>
+
+
+    <!-- ================================================================
+         채팅 목록 항목 공통 SELECT + FROM
+         #{userId} = 조회하는 회원 (상대 회원 정보와 안 읽은 수는 이 회원 기준)
+
+         m        : 매칭(채팅방)
+         partner  : 상대 회원
+         p        : 상대 프로필
+         photo    : 상대 대표 사진
+
+         마지막 메시지는 메시지 전송 시 갱신해 둔 m.last_message / m.last_message_at을 읽는다
+         (ChatMessageServiceImpl.sendMessage → updateLastMessage)
+         ================================================================ -->
+    <sql id="matchChatSelectFrom">
+        SELECT
+            m.id                                              AS match_id,
+            partner.id                                        AS user_id,
+            p.nickname,
+            p.gender,
+            TRUNC(MONTHS_BETWEEN(SYSDATE, p.birth_date) / 12) AS age,
+            p.height,
+            p.job,
+            p.region,
+            (
+                SELECT LISTAGG(i.name, ', ') WITHIN GROUP (ORDER BY i.id)
+                FROM mingle_user_interests ui
+                JOIN mingle_interests i
+                  ON i.id = ui.interest_id
+                WHERE ui.user_id = partner.id
+            )                                                 AS interests,
+            photo.photo_url,
+            m.last_message,
+            m.last_message_at,
+            (
+                SELECT COUNT(*)
+                FROM mingle_chat_messages unread
+                WHERE unread.match_id   = m.id
+                  AND unread.sender_id != #{userId}
+                  AND unread.is_read    = 0
+            )                                                 AS unread_count,
+            <!-- 매칭이 취소된 대화면 1 (대화 내용만 볼 수 있음) -->
+            CASE WHEN m.status = 'ACTIVE' THEN 0 ELSE 1 END   AS read_only
+
+        FROM mingle_matches m
+
+        JOIN mingle_users partner
+          ON partner.id = CASE
+                              WHEN m.user1_id = #{userId} THEN m.user2_id
+                              ELSE m.user1_id
+                          END
+
+        JOIN mingle_user_profiles p
+          ON p.user_id = partner.id
+
+        LEFT JOIN mingle_profile_photos photo
+          ON photo.user_id    = partner.id
+         AND photo.is_primary = 1
+    </sql>
+
+
+    <!--
+        내 채팅 목록 (최근 대화 순)
+        - ACTIVE 매칭
+        - 상대가 취소한 매칭 (대화 내용만 볼 수 있음, 내가 취소한 매칭은 제외)
+    -->
+    <select id="selectMatches" resultMap="matchChatResponseMap">
+        SELECT *
+        FROM (
+            SELECT paged.*, ROWNUM AS rn
+            FROM (
+                <include refid="matchChatSelectFrom"/>
+
+                WHERE (m.user1_id = #{userId} OR m.user2_id = #{userId})
+                  AND (
+                          m.status = 'ACTIVE'
+                       OR (m.status = 'CANCELLED' AND m.cancelled_by != #{userId})
+                      )
+
+                <!-- 대화가 없는 방은 매칭 성사 시각 기준 -->
+                ORDER BY NVL(m.last_message_at, m.matched_at) DESC
+            ) paged
+            WHERE ROWNUM &lt;= #{offset} + #{size}
+        )
+        WHERE rn &gt; #{offset}
+
+        <!-- 인라인 뷰의 정렬은 바깥까지 보장되지 않으므로 rn으로 순서를 확정한다 -->
+        ORDER BY rn
+    </select>
+
+
+    <!-- 내 채팅방 수 (목록 조건과 같아야 함) -->
+    <select id="countMatches" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM mingle_matches m
+        WHERE (m.user1_id = #{userId} OR m.user2_id = #{userId})
+          AND (
+                  m.status = 'ACTIVE'
+               OR (m.status = 'CANCELLED' AND m.cancelled_by != #{userId})
+              )
+    </select>
+
+
+    <!-- 채팅 목록 항목 한 건 (메시지 전송 / 매칭 성사 시 실시간 목록 갱신용) -->
+    <select id="selectMatchChat" resultMap="matchChatResponseMap">
+        <include refid="matchChatSelectFrom"/>
+
+        WHERE m.id = #{matchId}
+          AND (m.user1_id = #{userId} OR m.user2_id = #{userId})
+    </select>
+
+
+    <!-- ================================================================
+         매칭 생성 / 조회 / 취소
+         ================================================================ -->
+
+    <!-- 매칭 생성 (user1Id = 작은 ID, user2Id = 큰 ID) -->
+    <insert id="insertMatch" parameterType="com.mingle.vo.MatchVO">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            SELECT seq_mingle_matches.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO mingle_matches (id, user1_id, user2_id, status, matched_at)
+        VALUES (#{id}, #{user1Id}, #{user2Id}, 'ACTIVE', SYSDATE)
+    </insert>
+
+
+    <!-- 두 회원 사이에 ACTIVE 매칭이 있는지 -->
+    <select id="existsMatch" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM mingle_matches
+        WHERE user1_id = #{user1Id}
+          AND user2_id = #{user2Id}
+          AND status   = 'ACTIVE'
+    </select>
+
+
+    <!-- 채팅방 접근 권한 확인용 (MatchService 안에서만 사용) -->
+    <select id="selectMatchAccess" resultType="com.mingle.vo.MatchAccessVO">
+        SELECT
+            CASE WHEN user1_id = #{userId} OR user2_id = #{userId} THEN 1 ELSE 0 END AS participant,
+            CASE WHEN user1_id = #{userId} THEN user2_id ELSE user1_id END           AS partnerId,
+            status,
+            cancelled_by                                                            AS cancelledBy
+        FROM mingle_matches
+        WHERE id = #{matchId}
+    </select>
+
+
+    <!-- 매칭 상대 ID (메시지 받는 사람 / 읽음 알림 받을 사람) -->
+    <select id="selectPartnerId" resultType="int">
+        SELECT CASE WHEN user1_id = #{userId} THEN user2_id ELSE user1_id END
+        FROM mingle_matches
+        WHERE id = #{matchId}
+    </select>
+
+
+    <!--
+        채팅 목록용 마지막 메시지 갱신 (메시지 INSERT와 같은 트랜잭션에서 호출)
+        lastMessage: 텍스트는 내용, 사진은 '사진', 동영상은 '동영상'
+    -->
+    <update id="updateLastMessage">
+        UPDATE mingle_matches
+        SET last_message    = #{lastMessage, jdbcType=VARCHAR},
+            last_message_at = SYSDATE
+        WHERE id = #{matchId}
+    </update>
+
+
+    <!-- 매칭 나가기 1: ACTIVE 매칭에서 먼저 나감 → CANCELLED (0건이면 이미 취소됨) -->
+    <update id="updateMatchCancelled">
+        UPDATE mingle_matches
+        SET status        = 'CANCELLED',
+            cancelled_by  = #{cancelledBy},
+            cancelled_at  = SYSDATE,
+            cancel_reason = #{cancelReason, jdbcType=VARCHAR}
+        WHERE id     = #{matchId}
+          AND status = 'ACTIVE'
+    </update>
+
+
+    <!--
+        매칭 나가기 2: 상대가 먼저 나간(CANCELLED) 매칭에서 나머지 한 명도 나감 → DESTROYED
+        양쪽 모두 목록 / 채팅방에서 볼 수 없음 (메시지는 삭제하지 않음)
+        0건이면 이미 둘 다 나간 상태
+    -->
+    <update id="updateMatchDestroyed">
+        UPDATE mingle_matches
+        SET status = 'DESTROYED'
+        WHERE id     = #{matchId}
+          AND status = 'CANCELLED'
+    </update>
+
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mingle.mapper.DashboardMapper">
+
+    <select id="selectDashboardStats" resultType="com.mingle.dto.DashboardStatsResponse">
+        SELECT
+            (SELECT COUNT(*)
+             FROM mingle_users
+             WHERE created_at >= TRUNC(SYSDATE)) AS newUsersToday,
+
+            (SELECT COUNT(*)
+             FROM mingle_support_tickets
+             WHERE status = 'PENDING') AS pendingTickets,
+
+            (SELECT COUNT(*)
+             FROM mingle_reports
+             WHERE status = 'PENDING') AS pendingReports,
+
+            (SELECT NVL(SUM(amount), 0)
+             FROM mingle_payments
+             WHERE status = 'PAID'
+               AND paid_at >= TRUNC(SYSDATE)) AS todaySalesAmount,
+
+            (SELECT COUNT(*)
+             FROM mingle_payments
+             WHERE status = 'PAID'
+               AND paid_at >= TRUNC(SYSDATE)) AS todayPaymentCount,
+
+            (SELECT NVL(SUM(amount), 0)
+             FROM mingle_payments
+             WHERE status = 'PAID'
+               AND paid_at >= TRUNC(SYSDATE, 'MM')) AS monthSalesAmount,
+
+            (SELECT COUNT(*)
+             FROM mingle_payments
+             WHERE status = 'PAID'
+               AND paid_at >= TRUNC(SYSDATE, 'MM')) AS monthPaymentCount
+        FROM dual
+    </select>
+
+</mapper>

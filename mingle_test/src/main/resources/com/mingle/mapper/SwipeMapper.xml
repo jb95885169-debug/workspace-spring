@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mingle.mapper.SwipeMapper">
+
+    <!-- 스와이프 저장 (LIKE / PASS / SUPER_LIKE) -->
+    <insert id="insertSwipe" parameterType="com.mingle.vo.SwipeVO">
+        INSERT INTO mingle_swipes (id, swiper_id, target_id, action, created_at)
+        VALUES (seq_mingle_swipes.NEXTVAL, #{swiperId}, #{targetId}, #{action}, SYSDATE)
+    </insert>
+
+
+    <!-- swiperId가 targetId에게 좋아요(LIKE / SUPER_LIKE)를 보냈는지 → 서로 좋아요면 매칭 -->
+    <select id="existsLike" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM mingle_swipes
+        WHERE swiper_id = #{swiperId}
+          AND target_id = #{targetId}
+          AND action IN ('LIKE', 'SUPER_LIKE')
+    </select>
+
+
+    <!-- swiperId가 targetId를 이미 스와이프했는지 (종류 무관) -->
+    <select id="existsSwipe" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM mingle_swipes
+        WHERE swiper_id = #{swiperId}
+          AND target_id = #{targetId}
+    </select>
+
+
+    <!-- 오늘(DB 서버 날짜 0시부터) 보낸 슈퍼 좋아요 수 -->
+    <select id="countTodaySuperLikes" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM mingle_swipes
+        WHERE swiper_id  = #{swiperId}
+          AND action     = 'SUPER_LIKE'
+          AND created_at >= TRUNC(SYSDATE)
+    </select>
+
+</mapper>

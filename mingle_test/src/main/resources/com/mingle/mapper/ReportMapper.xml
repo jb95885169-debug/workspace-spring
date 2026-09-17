@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mingle.mapper.ReportMapper">
+
+    <!--
+        RESOLVED / REJECTED는 관리자가 처리한 상태이므로 처리 시간을 남긴다.
+        PENDING으로 되돌린 신고는 미처리 상태이므로 처리 시간을 비운다.
+    -->
+    <update id="updateReportStatus">
+        UPDATE mingle_reports
+        SET status = #{status},
+            processed_at = CASE
+                WHEN #{status} IN ('RESOLVED', 'REJECTED') THEN SYSDATE
+                ELSE NULL
+            END
+        WHERE id = #{reportId}
+          AND #{status} IN ('PENDING', 'RESOLVED', 'REJECTED')
+    </update>
+
+    <select id="selectReportById" resultType="com.mingle.vo.ReportVO">
+        SELECT
+            id,
+            status,
+            processed_at AS processedAt
+        FROM mingle_reports
+        WHERE id = #{reportId}
+    </select>
+</mapper>

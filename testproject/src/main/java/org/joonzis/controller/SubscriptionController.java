@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.joonzis.domain.PaymentVO;
 import org.joonzis.domain.SubscriptionVO;
 import org.joonzis.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,13 +27,23 @@ public class SubscriptionController {
     private UserService userService;
 
     @GetMapping("")
-    public String subscription() {
+    public String subscription(Model model, HttpSession session) {
+        Long userId = 1L; // 임시 테스트용 유저 ID
+        
+        // DB에서 활성 구독 정보 조회 후 JSP로 전달
+        SubscriptionVO activeSubscription = userService.getActiveSubscription(userId);
+        model.addAttribute("activeSubscription", activeSubscription);
+        
         return "subscription/subscription";
     }
 
-    @GetMapping("/history")
-    public String paymentHistory() {
-        return "subscription/paymentHistory";
+    @GetMapping(value = "/history", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public List<PaymentVO> paymentHistory(HttpSession session) {
+        // 임시 테스트용 유저 ID (로그인 세션 적용 전이라면 1L 사용)
+        Long userId = 1L; 
+        
+        return userService.selectPaymentHistory(userId);
     }
 
     // [수정] 포트원 결제 성공 후 데이터를 받아 처리하는 엔드포인트
@@ -61,16 +74,51 @@ public class SubscriptionController {
     
     @GetMapping(value = "/info", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getSubscriptionInfo() {
-        Long userId = 1L;
+    public ResponseEntity<Map<String, Object>> getSubscriptionInfo(HttpSession session) {
+        Long userId = 1L; // 임시 유저 ID
         
-        SubscriptionVO subInfo = userService.getActiveSubscription(userId);
-        List<PaymentVO> paymentList = userService.getPaymentHistory(userId);
+        // 이미 만들어져 있는 활성 구독 조회 메서드 재사용!
+        SubscriptionVO subInfo = userService.getActiveSubscription(userId); 
         
-        Map<String, Object> result = new HashMap<>();
-        result.put("subscription", subInfo);
-        result.put("paymentList", paymentList);
+        Map<String, Object> responseMap = new HashMap<>();
         
-        return ResponseEntity.ok(result);
+        int platinumPrice = 39900; // 플래티넘 정가
+        int goldPrice = 19900;    // 골드 정가
+        int remainingDays = 0;
+        int remainingValue = 0;
+        int finalPrice = platinumPrice;
+        String currentTier = "Basic";
+
+        if (subInfo != null) {
+            currentTier = subInfo.getTier(); // 'Gold' 또는 'Platinum'
+            remainingDays = subInfo.getRemainingDays() != null ? subInfo.getRemainingDays() : 0;
+            
+            // ★ 핵심: 현재 골드 등급이고 남은 일수가 0보다 클 때 환산 가치 계산
+            if ("Gold".equalsIgnoreCase(currentTier) && remainingDays > 0) {
+                // 골드 하루 환산 금액 * 남은 일수 (반올림)
+                remainingValue = (int) Math.round((double) goldPrice / 30 * remainingDays);
+                finalPrice = platinumPrice - remainingValue;
+            }
+
+            responseMap.put("tier", currentTier); 
+            responseMap.put("remainingDays", remainingDays); 
+            responseMap.put("endDate", subInfo.getEndDate());
+        } else {
+            responseMap.put("tier", "Basic");
+            responseMap.put("remainingDays", 0);
+        }
+        
+        // 프론트(JSP/JS)에서 모달 띄울 때 쓸 수 있도록 계산된 값들을 함께 내려줌
+        responseMap.put("remainingValue", remainingValue); // 골드 잔여 환산 가치
+        responseMap.put("finalPrice", finalPrice);         // 최종 플래티넘 결제 금액
+        
+        return ResponseEntity.ok(responseMap);
     }
+    
+
+    
+    
+    
+    
+    
 }
