@@ -21,6 +21,8 @@ let hasMoreFeeds = true;
 // 수정 중인 글 (null이면 새 글쓰기)
 let editingFeedId = null;
 
+let reportTargetUserId = null;
+
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -45,6 +47,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("feedCancelBtn")
         .addEventListener("click", resetFeedForm);
+
+    document.querySelectorAll("[data-report-close]")
+        .forEach(function (element) {
+            element.addEventListener("click", closeReportCenter);
+        });
+
+    document.querySelectorAll("[data-report-tab]")
+        .forEach(function (button) {
+            button.addEventListener("click", function () {
+                switchReportTab(button.dataset.reportTab);
+            });
+        });
+
+    document.getElementById("reportForm")
+        .addEventListener("submit", submitReport);
 });
 
 
@@ -394,17 +411,135 @@ function createFeedCard(feed) {
         toggleComments(feed.id, card);
     });
 
+    const reportButton = document.createElement("button");
+    reportButton.type = "button";
+    reportButton.classList.add("feed-report-btn");
+    reportButton.textContent = "신고";
+    reportButton.addEventListener("click", function () {
+        openReportCenter(feed.userId);
+    });
+
     const time = document.createElement("span");
     time.classList.add("feed-time");
     time.textContent = formatDate(feed.createdAt);
 
     bottom.appendChild(likeButton);
     bottom.appendChild(commentButton);
+    bottom.appendChild(reportButton);
     bottom.appendChild(time);
 
     card.appendChild(bottom);
 
     return card;
+}
+
+
+function openReportCenter(targetUserId) {
+
+    reportTargetUserId = targetUserId;
+    document.getElementById("reportModal").hidden = false;
+    switchReportTab("form");
+    document.getElementById("reportReason").focus();
+}
+
+
+function closeReportCenter() {
+
+    document.getElementById("reportModal").hidden = true;
+}
+
+
+function switchReportTab(tabName) {
+
+    const form = document.getElementById("reportForm");
+    const history = document.getElementById("reportHistory");
+
+    document.querySelectorAll("[data-report-tab]")
+        .forEach(function (button) {
+            button.classList.toggle("active", button.dataset.reportTab === tabName);
+        });
+
+    form.hidden = tabName !== "form";
+    history.hidden = tabName !== "history";
+
+    if (tabName === "history") {
+        loadMyReports();
+    }
+}
+
+
+function submitReport(event) {
+
+    event.preventDefault();
+
+    fetch(contextPath + "/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            targetUserId: reportTargetUserId,
+            reason: document.getElementById("reportReason").value,
+            title: document.getElementById("reportSubject").value,
+            content: document.getElementById("reportContent").value
+        })
+    })
+        .then(function (response) {
+            if (response.ok) {
+                return;
+            }
+            return response.json().catch(function () { return {}; })
+                .then(function (data) {
+                    throw new Error(data.message || "신고를 접수하지 못했습니다.");
+                });
+        })
+        .then(function () {
+            alert("신고가 접수되었습니다.");
+            document.getElementById("reportForm").reset();
+            closeReportCenter();
+        })
+        .catch(function (error) {
+            alert(error.message);
+        });
+}
+
+
+function loadMyReports() {
+
+    const history = document.getElementById("reportHistory");
+    history.textContent = "신고 내역을 불러오는 중입니다.";
+
+    fetchJson("/api/reports/mine")
+        .then(function (reports) {
+            history.textContent = "";
+
+            if (!reports.length) {
+                history.textContent = "접수한 신고가 없습니다.";
+                return;
+            }
+
+            reports.forEach(function (report) {
+                const item = document.createElement("article");
+                item.classList.add("report-history-item");
+
+                const heading = document.createElement("div");
+                heading.classList.add("report-history-heading");
+                heading.textContent = report.title;
+
+                const status = document.createElement("span");
+                status.classList.add("report-status", "report-status-" + report.status.toLowerCase());
+                status.textContent = report.status === "PENDING" ? "접수" : report.status === "RESOLVED" ? "처리 완료" : "반려";
+
+                const reason = document.createElement("p");
+                reason.textContent = "사유: " + report.reason;
+
+                item.appendChild(heading);
+                item.appendChild(status);
+                item.appendChild(reason);
+                history.appendChild(item);
+            });
+        })
+        .catch(function () {
+            history.textContent = "신고 내역을 불러오지 못했습니다.";
+        });
 }
 
 

@@ -21,6 +21,9 @@
 
     <a class="logout-link" href="${pageContext.request.contextPath}/feeds">피드</a>
     <a class="logout-link" href="${pageContext.request.contextPath}/subscription">구독</a>
+    <% if (request.isUserInRole("ADMIN")) { %>
+        <a class="logout-link" href="${pageContext.request.contextPath}/admin/subscriptions">관리자</a>
+    <% } %>
     <a class="logout-link" href="${pageContext.request.contextPath}/profile">내 프로필</a>
     <a class="logout-link" href="${pageContext.request.contextPath}/logout">로그아웃</a>
 

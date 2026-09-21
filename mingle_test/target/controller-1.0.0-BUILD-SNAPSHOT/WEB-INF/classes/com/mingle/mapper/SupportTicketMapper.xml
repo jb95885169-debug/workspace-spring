@@ -4,6 +4,13 @@
 
 <mapper namespace="com.mingle.mapper.SupportTicketMapper">
 
+    <select id="selectTicketsForAdmin" resultType="com.mingle.vo.SupportTicketVO">
+        SELECT id, user_id AS userId, category, title, content, status,
+               answer, answered_at AS answeredAt, created_at AS createdAt
+        FROM mingle_support_tickets
+        ORDER BY CASE WHEN status = 'PENDING' THEN 0 ELSE 1 END, created_at DESC
+    </select>
+
     <!--
         관리자가 문의에 답변하면 답변 내용, 처리 상태, 답변 일시를 함께 저장한다.
         이미 처리된 문의는 갱신하지 않으며, 이 경우 변경 건수는 0이다.

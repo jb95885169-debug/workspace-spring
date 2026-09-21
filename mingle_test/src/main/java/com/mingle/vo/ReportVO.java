@@ -9,6 +9,11 @@ import lombok.Data;
 public class ReportVO {
 
     private long id;
+    private long reporterId;
+    private long targetUserId;
+    private String reason;
+    private String title;
+    private String content;
     private String status;
     private Date processedAt;
 }

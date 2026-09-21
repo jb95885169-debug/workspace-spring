@@ -62,6 +62,41 @@
 
 </div>
 
+<div id="reportModal" class="report-modal" hidden>
+    <div class="report-backdrop" data-report-close></div>
+    <section class="report-panel" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+        <div class="report-header">
+            <h2 id="reportTitle">🚨 신고 센터</h2>
+            <button type="button" class="report-close-btn" data-report-close aria-label="신고 창 닫기">×</button>
+        </div>
+        <div class="report-tabs">
+            <button type="button" class="report-tab active" data-report-tab="form">🚨 새 신고 등록</button>
+            <button type="button" class="report-tab" data-report-tab="history">📋 나의 신고 내역</button>
+        </div>
+
+        <form id="reportForm" class="report-form">
+            <label for="reportReason">신고 사유</label>
+            <select id="reportReason" required>
+                <option value="">신고 사유를 선택해 주세요.</option>
+                <option value="스팸 및 홍보">스팸 및 홍보</option>
+                <option value="욕설 및 비방">욕설 및 비방</option>
+                <option value="부적절한 콘텐츠">부적절한 콘텐츠</option>
+                <option value="사칭 및 도용">사칭 및 도용</option>
+                <option value="기타">기타</option>
+            </select>
+            <label for="reportSubject">신고 제목</label>
+            <input id="reportSubject" type="text" maxlength="100" placeholder="제목을 입력해 주세요." required>
+            <label for="reportContent">신고 내용</label>
+            <textarea id="reportContent" rows="5" maxlength="1000" placeholder="신고 내용을 자세히 적어 주세요." required></textarea>
+            <button type="submit" class="report-submit-btn">신고 접수하기</button>
+        </form>
+
+        <div id="reportHistory" class="report-history" hidden>
+            <p class="report-loading">신고 내역을 불러오는 중입니다.</p>
+        </div>
+    </section>
+</div>
+
 
 <script>
     const contextPath = '${pageContext.request.contextPath}';

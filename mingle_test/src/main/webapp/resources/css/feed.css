@@ -275,7 +275,8 @@ body {
 }
 
 .feed-like-btn,
-.feed-comment-btn {
+.feed-comment-btn,
+.feed-report-btn {
     padding: 5px 10px;
 
     border: 1px solid #eee;
@@ -286,6 +287,15 @@ body {
 
     font-size: 12px;
     cursor: pointer;
+}
+
+.feed-report-btn {
+    color: #999;
+}
+
+.feed-report-btn:hover {
+    border-color: #ff5c7a;
+    color: #ff5c7a;
 }
 
 .feed-like-btn.liked {
@@ -301,6 +311,167 @@ body {
     color: #aaa;
     font-size: 11px;
 }
+
+
+/* =========================
+   신고 센터
+   ========================= */
+
+.report-modal[hidden] {
+    display: none;
+}
+
+.report-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.report-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 20, 24, .52);
+}
+
+.report-panel {
+    position: relative;
+    width: min(100%, 520px);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: 24px;
+    border: 1px solid #e8e8ee;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .2);
+}
+
+.report-header,
+.report-history-heading {
+    display: flex;
+    align-items: center;
+}
+
+.report-header {
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.report-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.report-close-btn {
+    border: none;
+    background: transparent;
+    color: #888;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.report-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    padding: 4px;
+    border-radius: 10px;
+    background: #f6f6f8;
+}
+
+.report-tab {
+    flex: 1;
+    padding: 10px 6px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #888;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.report-tab.active {
+    background: #ff5c7a;
+    color: #fff;
+}
+
+.report-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.report-form label {
+    margin-top: 4px;
+    color: #666;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.report-form select,
+.report-form input,
+.report-form textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    font: inherit;
+    font-size: 14px;
+}
+
+.report-form textarea {
+    resize: vertical;
+}
+
+.report-submit-btn {
+    margin-top: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #ff5c7a;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.report-history-item {
+    position: relative;
+    padding: 14px 70px 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.report-history-heading {
+    min-height: 24px;
+    color: #333;
+    font-size: 15px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.report-history-item p,
+.report-loading {
+    margin: 6px 0 0;
+    color: #888;
+    font-size: 13px;
+}
+
+.report-status {
+    position: absolute;
+    top: 14px;
+    right: 0;
+    font-size: 12px;
+}
+
+.report-status-pending { color: #d89b00; }
+.report-status-resolved { color: #35a06a; }
+.report-status-rejected { color: #e05b63; }
 
 
 /* =========================

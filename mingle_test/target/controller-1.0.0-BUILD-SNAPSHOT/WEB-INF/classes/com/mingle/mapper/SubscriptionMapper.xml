@@ -52,6 +52,14 @@
         WHERE id = #{productId}
     </select>
 
+    <select id="selectAllProductsForAdmin" resultType="com.mingle.vo.ProductVO">
+        SELECT id, name, tier, description, price,
+               duration_days AS durationDays,
+               CASE WHEN is_active = 1 THEN 1 ELSE 0 END AS active
+        FROM mingle_products
+        ORDER BY tier, duration_days
+    </select>
+
 
     <!--
         상품 원본만 수정한다.
@@ -63,6 +71,21 @@
             description = #{description, jdbcType=VARCHAR}
         WHERE id = #{productId}
           AND #{price} &gt;= 0
+    </update>
+
+    <update id="updateProductForAdmin">
+        UPDATE mingle_products
+        SET price = #{price},
+            duration_days = #{durationDays},
+            description = #{description, jdbcType=VARCHAR},
+                is_active =
+                <choose>
+                    <when test="active">1</when>
+                    <otherwise>0</otherwise>
+                </choose>
+        WHERE id = #{productId}
+          AND #{price} &gt;= 0
+          AND #{durationDays} &gt; 0
     </update>
 
 

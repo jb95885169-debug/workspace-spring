@@ -108,7 +108,7 @@ function createProductCard(product) {
 
     const description = document.createElement("div");
     description.classList.add("product-description");
-    description.textContent = TIER_SUPER_LIKES[product.tier] || product.description || "";
+    description.textContent = product.description || "";
 
     const price = document.createElement("div");
     price.classList.add("product-price");

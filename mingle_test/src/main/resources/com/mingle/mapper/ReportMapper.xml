@@ -4,6 +4,29 @@
 
 <mapper namespace="com.mingle.mapper.ReportMapper">
 
+    <select id="selectReportsForAdmin" resultType="com.mingle.vo.ReportVO">
+        SELECT id, reporter_id AS reporterId, target_user_id AS targetUserId,
+               reason, title, content, status, processed_at AS processedAt
+        FROM mingle_reports
+        ORDER BY CASE WHEN status = 'PENDING' THEN 0 ELSE 1 END, id DESC
+    </select>
+
+    <select id="selectReportsByReporter" resultType="com.mingle.vo.ReportVO">
+        SELECT id, reporter_id AS reporterId, target_user_id AS targetUserId,
+               reason, title, content, status, processed_at AS processedAt
+        FROM mingle_reports
+        WHERE reporter_id = #{reporterId}
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insertReport" parameterType="com.mingle.vo.ReportVO">
+        INSERT INTO mingle_reports (
+            reporter_id, target_user_id, reason, title, content, status
+        ) VALUES (
+            #{reporterId}, #{targetUserId}, #{reason}, #{title}, #{content}, 'PENDING'
+        )
+    </insert>
+
     <!--
         RESOLVED / REJECTED는 관리자가 처리한 상태이므로 처리 시간을 남긴다.
         PENDING으로 되돌린 신고는 미처리 상태이므로 처리 시간을 비운다.
@@ -22,6 +45,11 @@
     <select id="selectReportById" resultType="com.mingle.vo.ReportVO">
         SELECT
             id,
+            reporter_id AS reporterId,
+            target_user_id AS targetUserId,
+            reason,
+            title,
+            content,
             status,
             processed_at AS processedAt
         FROM mingle_reports
