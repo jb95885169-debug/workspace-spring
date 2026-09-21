@@ -1,0 +1,180 @@
+/* =========================================================
+   로그인 / 회원가입 / 비밀번호 찾기 공통
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #f7f7f7;
+
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+
+.auth-container {
+    width: 350px;
+    max-width: 90%;
+
+    margin: 40px 0;
+    padding: 40px;
+
+    background: #fff;
+    border-radius: 15px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* 회원가입처럼 항목이 많은 화면 */
+.auth-container-wide {
+    width: 420px;
+}
+
+
+.auth-container h1 {
+    margin: 0 0 30px;
+
+    text-align: center;
+    color: #ff4f81;
+}
+
+.auth-container h2 {
+    margin: 25px 0 10px;
+
+    font-size: 14px;
+    color: #888;
+}
+
+
+input,
+select {
+    width: 100%;
+
+    padding: 12px;
+    margin-bottom: 15px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #ff4f81;
+}
+
+label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 13px;
+    color: #888;
+}
+
+
+button {
+    width: 100%;
+
+    padding: 12px;
+    margin-top: 5px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ff4f81;
+    color: #fff;
+
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff336f;
+}
+
+
+/* =========================================================
+   안내 문구
+   ========================================================= */
+
+.auth-error {
+    margin-bottom: 15px;
+    padding: 10px;
+
+    border-radius: 8px;
+
+    background: #ffeef1;
+    color: #d32f52;
+
+    font-size: 13px;
+    text-align: center;
+}
+
+.auth-message {
+    margin-bottom: 15px;
+    padding: 10px;
+
+    border-radius: 8px;
+
+    background: #eef5ff;
+    color: #2b6cb0;
+
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.auth-guide {
+    margin: 0 0 20px;
+
+    color: #888;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* 발급된 임시 비밀번호 */
+.temp-password {
+    margin-bottom: 20px;
+    padding: 15px;
+
+    border: 1px dashed #ff4f81;
+    border-radius: 8px;
+
+    color: #ff4f81;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+
+.auth-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+
+    margin-top: 20px;
+}
+
+.auth-links a {
+    color: #888;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.auth-links a:hover {
+    color: #ff4f81;
+}

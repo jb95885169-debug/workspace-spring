@@ -28,14 +28,27 @@ public interface SubscriptionMapper {
 	// 관리자 상품 관리용 조회 (판매 중지 상품도 포함)
 	ProductVO selectProductById(int productId);
 
+	// 관리자 상품 전체 조회
+	List<ProductVO> selectAllProductsForAdmin();
+
 	// 관리자 상품 가격 / 설명 수정 (결제 내역의 상품명·금액은 수정하지 않는다)
 	int updateProductPriceAndDescription(
 			@Param("productId") int productId,
 			@Param("price") int price,
 			@Param("description") String description);
 
+	int updateProductForAdmin(
+			@Param("productId") int productId,
+			@Param("price") int price,
+			@Param("durationDays") int durationDays,
+			@Param("description") String description,
+			@Param("active") boolean active);
+
 	// 결제 INSERT (selectKey로 payment.id가 채워짐)
 	int insertPayment(PaymentVO payment);
+
+	// PortOne 콜백 중복 처리 방지
+	PaymentVO selectPaymentByImpUid(String impUid);
 
 	// 구독 INSERT (결제와 같은 트랜잭션)
 	int insertSubscription(SubscriptionVO subscription);

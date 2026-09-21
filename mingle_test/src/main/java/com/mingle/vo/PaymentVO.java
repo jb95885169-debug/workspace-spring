@@ -20,4 +20,6 @@ public class PaymentVO {
     private int productId;
     private String productName;
     private int amount;
+    private String impUid;
+    private String merchantUid;
 }

@@ -52,6 +52,14 @@
         WHERE id = #{productId}
     </select>
 
+    <select id="selectAllProductsForAdmin" resultType="com.mingle.vo.ProductVO">
+        SELECT id, name, tier, description, price,
+               duration_days AS durationDays,
+               CASE WHEN is_active = 1 THEN 1 ELSE 0 END AS active
+        FROM mingle_products
+        ORDER BY tier, duration_days
+    </select>
+
 
     <!--
         상품 원본만 수정한다.
@@ -65,9 +73,24 @@
           AND #{price} &gt;= 0
     </update>
 
+    <update id="updateProductForAdmin">
+        UPDATE mingle_products
+        SET price = #{price},
+            duration_days = #{durationDays},
+            description = #{description, jdbcType=VARCHAR},
+                is_active =
+                <choose>
+                    <when test="active">1</when>
+                    <otherwise>0</otherwise>
+                </choose>
+        WHERE id = #{productId}
+          AND #{price} &gt;= 0
+          AND #{durationDays} &gt; 0
+    </update>
+
 
     <!-- ================================================================
-         결제 / 구독 (가짜 결제라 INSERT 시 바로 PAID / ACTIVE)
+         결제 / 구독 (PortOne 검증 후 INSERT)
          ================================================================ -->
 
     <!-- 상품명과 금액은 결제 시점 값을 남긴다 (나중에 상품이 바뀌어도 내역은 그대로) -->
@@ -77,7 +100,7 @@
         </selectKey>
 
         INSERT INTO mingle_payments (
-            id, user_id, product_id, product_name, amount, status, paid_at
+            id, user_id, product_id, product_name, amount, imp_uid, merchant_uid, status, paid_at
         )
         VALUES (
             #{id},
@@ -85,10 +108,21 @@
             #{productId},
             #{productName},
             #{amount},
+            #{impUid},
+            #{merchantUid},
             'PAID',
             SYSDATE
         )
     </insert>
+
+    <select id="selectPaymentByImpUid" parameterType="string"
+            resultType="com.mingle.vo.PaymentVO">
+        SELECT id, user_id AS userId, product_id AS productId,
+               product_name AS productName, amount,
+               imp_uid AS impUid, merchant_uid AS merchantUid
+        FROM mingle_payments
+        WHERE imp_uid = #{impUid}
+    </select>
 
 
     <!--

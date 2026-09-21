@@ -1,0 +1,577 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    background: #f5f6f8;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+
+    color: #222;
+}
+
+
+/* =========================
+   전체 컨테이너
+   ========================= */
+
+.chat-list-container {
+    width: 100%;
+    max-width: 560px;
+    min-height: 100vh;
+
+    margin: 0 auto;
+
+    background: #fff;
+}
+
+
+/* =========================
+   헤더
+   ========================= */
+
+.chat-list-header {
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid #eee;
+
+    background: #fff;
+}
+
+.chat-list-header h2 {
+    margin: 0;
+
+    font-size: 21px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   섹션
+   ========================= */
+
+.like-section {
+    padding-bottom: 12px;
+
+    border-bottom: 8px solid #f5f6f8;
+}
+
+.chat-section {
+    background: #fff;
+}
+
+
+/* =========================
+   섹션 헤더
+   ========================= */
+
+.section-header {
+    padding: 17px 20px 9px;
+}
+
+.section-header h3 {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #444;
+}
+
+
+/* =========================
+   좋아요 가로 리스트
+   ========================= */
+
+.like-list {
+    display: flex;
+
+    gap: 15px;
+
+    padding: 8px 20px 14px;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+}
+
+.like-list::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================
+   좋아요 아이템
+   ========================= */
+
+.like-item {
+    width: 78px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   좋아요 프로필
+   ========================= */
+
+.like-profile {
+    width: 66px;
+    height: 66px;
+
+    margin-bottom: 7px;
+}
+
+.like-image {
+    width: 66px;
+    height: 66px;
+
+    display: block;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 1px solid #eee;
+}
+
+.like-placeholder {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f0f1f3;
+
+    color: #aaa;
+
+    font-size: 18px;
+}
+
+
+/* =========================
+   좋아요 이름
+   ========================= */
+
+.like-name {
+    width: 100%;
+
+    margin-bottom: 5px;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================
+   좋아요 버튼
+   ========================= */
+
+.like-back-btn {
+    width: 27px;
+    height: 27px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #fff0f3;
+
+    color: #ff5c7a;
+
+    font-size: 16px;
+
+    line-height: 27px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        transform 0.1s ease;
+}
+
+.like-back-btn:hover {
+    background: #ffe2e8;
+}
+
+.like-back-btn:active {
+    transform: scale(0.9);
+}
+
+
+/* =========================
+   가려진 좋아요 (무료 회원)
+   ========================= */
+
+/* 서버가 아주 작게 줄인 사진을 주므로 여기서는 살짝만 더 흐리게 한다 */
+.like-item.locked {
+    cursor: pointer;
+}
+
+.like-item.locked .like-image {
+    filter: blur(3px);
+}
+
+.like-item.locked .like-name {
+    color: #bbb;
+}
+
+/* 사진 위에 자물쇠 */
+.like-item.locked .like-profile {
+    position: relative;
+}
+
+.like-item.locked .like-profile::after {
+    content: "🔒";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 66px;
+    height: 66px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+
+/* =========================
+   슈퍼 좋아요를 보낸 회원 (목록 맨 앞, 파란 테두리)
+   ========================= */
+
+.like-item.super-liked-me .like-image {
+    border: 2px solid #3b82f6;
+
+    box-shadow: 0 0 0 2px #dbeafe;
+}
+
+.super-like-badge {
+    color: #3b82f6;
+}
+
+
+/* =========================
+   상대가 매칭을 취소한 대화 (대화 내용만 볼 수 있음)
+   ========================= */
+
+.chat-item.read-only {
+    opacity: 0.6;
+}
+
+.read-only-badge {
+    flex-shrink: 0;
+
+    margin-left: 6px;
+    padding: 1px 6px;
+
+    border-radius: 6px;
+
+    background: #eee;
+    color: #888;
+
+    font-size: 11px;
+}
+
+
+/* =========================
+   채팅 리스트
+   ========================= */
+
+.chat-list {
+    width: 100%;
+}
+
+
+/* =========================
+   채팅 아이템
+   ========================= */
+
+.chat-item {
+    display: flex;
+
+    align-items: center;
+
+    min-height: 86px;
+
+    padding: 13px 20px;
+
+    background: #fff;
+
+    border-bottom: 1px solid #f3f3f3;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease;
+}
+
+.chat-item:hover {
+    background: #fafafa;
+}
+
+.chat-item:active {
+    background: #f2f2f2;
+}
+
+
+/* =========================
+   채팅 프로필
+   ========================= */
+
+.chat-profile {
+    width: 54px;
+    height: 54px;
+
+    flex-shrink: 0;
+
+    margin-right: 14px;
+}
+
+.chat-profile-image,
+.chat-profile-placeholder {
+    width: 54px;
+    height: 54px;
+
+    border-radius: 50%;
+}
+
+.chat-profile-image {
+    display: block;
+
+    object-fit: cover;
+
+    border: 1px solid #eee;
+}
+
+.chat-profile-placeholder {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #f0f1f3;
+
+    color: #aaa;
+
+    font-size: 18px;
+}
+
+
+/* =========================
+   채팅 정보
+   ========================= */
+
+.chat-info {
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+/* =========================
+   채팅 상단
+   ========================= */
+
+.chat-top {
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    margin-bottom: 6px;
+}
+
+.chat-nickname {
+    flex: 1;
+
+    min-width: 0;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.last-message-time {
+    flex-shrink: 0;
+
+    margin-left: 10px;
+
+    font-size: 11px;
+
+    color: #aaa;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   채팅 하단
+   ========================= */
+
+.chat-bottom {
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+}
+
+.last-message {
+    flex: 1;
+
+    min-width: 0;
+
+    font-size: 13px;
+
+    color: #888;
+
+    line-height: 1.4;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* 안 읽은 메시지가 있으면 강조 */
+
+.chat-item:has(.unread-badge) .last-message {
+    color: #444;
+
+    font-weight: 600;
+}
+
+
+/* =========================
+   안 읽은 개수
+   ========================= */
+
+.unread-badge {
+    min-width: 20px;
+    height: 20px;
+
+    margin-left: 10px;
+
+    padding: 0 6px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #ff5c7a;
+
+    color: #fff;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+/* =========================
+   빈 상태
+   ========================= */
+
+.like-list-empty {
+    width: 100%;
+
+    padding: 25px 20px;
+
+    text-align: center;
+
+    color: #aaa;
+
+    font-size: 12px;
+}
+
+.chat-list-empty {
+    padding: 45px 20px;
+
+    text-align: center;
+
+    color: #aaa;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   모바일
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .chat-list-header {
+        height: 60px;
+
+        padding: 0 17px;
+    }
+
+    .section-header {
+        padding-left: 17px;
+        padding-right: 17px;
+    }
+
+    .like-list {
+        padding-left: 17px;
+        padding-right: 17px;
+    }
+
+    .chat-item {
+        padding-left: 17px;
+        padding-right: 17px;
+    }
+
+}

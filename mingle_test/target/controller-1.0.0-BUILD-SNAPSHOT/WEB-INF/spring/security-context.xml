@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 비밀번호 해시 (가입 / 비밀번호 찾기의 AuthServiceImpl도 이 빈을 주입받는다) -->
+	<bean id="bcryptPasswordEncoder"
+	      class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+	<!-- 이메일로 회원과 권한을 조회 (mingle_users + mingle_auth) -->
+	<bean id="customUserDetailService"
+	      class="com.mingle.security.CustomUserDetailService"/>
+
+	<!-- 로그인 성공 시 세션에 userId를 넣는다 (REST / JSP / WebSocket이 이 값을 본다) -->
+	<bean id="customLoginSuccessHandler"
+	      class="com.mingle.security.CustomLoginSuccessHandler"/>
+
+	<security:http auto-config="true" use-expressions="true">
+
+		<!-- 로그인 없이 볼 수 있는 곳 -->
+		<security:intercept-url pattern="/login"        access="permitAll"/>
+		<security:intercept-url pattern="/signup"       access="permitAll"/>
+		<security:intercept-url pattern="/password/**"  access="permitAll"/>
+		<security:intercept-url pattern="/resources/**" access="permitAll"/>
+		<!-- 가입 화면에서도 사진을 올리므로 임시 업로드와 미리보기는 열어 둔다 -->
+		<security:intercept-url pattern="/api/uploads/temp" access="permitAll"/>
+		<security:intercept-url pattern="/uploads/temp/**" access="permitAll"/>
+
+		<!-- 나머지는 로그인 필요 -->
+		<security:intercept-url pattern="/**" access="isAuthenticated()"/>
+
+		<!--
+			login-page  : 로그인 화면 (AuthController의 GET /login)
+			username-parameter : 아이디 대신 이메일을 쓴다
+			실패하면 /login?error로 되돌아간다
+		-->
+		<security:form-login
+			login-page="/login"
+			login-processing-url="/login"
+			username-parameter="email"
+			password-parameter="password"
+			authentication-success-handler-ref="customLoginSuccessHandler"
+			authentication-failure-url="/login?error"/>
+
+		<security:logout
+			logout-url="/logout"
+			logout-success-url="/login"
+			invalidate-session="true"/>
+
+		<!-- 화면의 fetch 요청(스와이프 / 업로드 / 매칭 나가기)이 토큰을 보내지 않으므로 끈다 -->
+		<security:csrf disabled="true"/>
+
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="customUserDetailService">
+			<security:password-encoder ref="bcryptPasswordEncoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>

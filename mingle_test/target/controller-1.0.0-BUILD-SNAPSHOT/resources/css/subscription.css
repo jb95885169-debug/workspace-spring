@@ -1,0 +1,217 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    background: #f5f6f8;
+
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+
+/* =========================
+   전체
+   ========================= */
+
+.subscription-container {
+    width: 100%;
+    max-width: 560px;
+    min-height: 100vh;
+
+    margin: 0 auto;
+    padding-bottom: 40px;
+
+    background: #fff;
+}
+
+.subscription-header {
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.subscription-header h2 {
+    margin: 0;
+
+    font-size: 21px;
+}
+
+.subscription-header button {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    background: transparent;
+
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.subscription-container h3 {
+    margin: 25px 20px 10px;
+
+    font-size: 14px;
+    color: #444;
+}
+
+
+/* =========================
+   현재 등급
+   ========================= */
+
+.tier-box {
+    margin: 20px;
+    padding: 20px;
+
+    border-radius: 14px;
+
+    background: #f0f1f3;
+    color: #444;
+}
+
+.tier-box.tier-gold {
+    background: linear-gradient(135deg, #f7c948, #f0a500);
+    color: #fff;
+}
+
+.tier-box.tier-platinum {
+    background: linear-gradient(135deg, #7f8fa6, #353b48);
+    color: #fff;
+}
+
+.tier-name {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.tier-period {
+    margin-top: 6px;
+
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+
+/* =========================
+   상품
+   ========================= */
+
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 0 20px;
+}
+
+.product-card {
+    padding: 16px;
+
+    border: 1px solid #eee;
+    border-radius: 12px;
+}
+
+.product-name {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.product-description {
+    margin-top: 5px;
+
+    color: #888;
+    font-size: 13px;
+}
+
+.product-price {
+    margin-top: 10px;
+
+    color: #ff4f81;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* "남은 20일을 플래티넘으로 바꿉니다" 같은 안내 */
+.product-note {
+    margin-top: 6px;
+
+    color: #888;
+    font-size: 12px;
+}
+
+.product-buy-btn {
+    width: 100%;
+
+    margin-top: 12px;
+    padding: 11px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ff4f81;
+    color: #fff;
+
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.product-buy-btn:hover {
+    background: #ff336f;
+}
+
+.product-buy-btn:disabled {
+    background: #ddd;
+    cursor: default;
+}
+
+
+/* =========================
+   결제 내역
+   ========================= */
+
+.history-list {
+    padding: 0 20px;
+
+    color: #888;
+    font-size: 13px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.history-name {
+    flex: 1;
+
+    color: #222;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.history-period {
+    color: #aaa;
+    font-size: 12px;
+}
+
+.history-amount {
+    color: #444;
+    font-size: 13px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}

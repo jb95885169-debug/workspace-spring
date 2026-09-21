@@ -5,6 +5,7 @@ import java.util.List;
 import com.mingle.dto.PaymentHistoryResponse;
 import com.mingle.dto.PaymentRequest;
 import com.mingle.dto.ProductResponse;
+import com.mingle.dto.PurchasePolicyResponse;
 import com.mingle.dto.SubscriptionResponse;
 
 /**
@@ -15,7 +16,7 @@ import com.mingle.dto.SubscriptionResponse;
  *
  * 살 수 있는 규칙
  * - 구독이 없으면        : 아무 상품이나 정가로 구매
- * - 같은 등급을 또 사면  : 정가로 기간 연장 (기존 종료일부터 이어 붙임)
+ * - 같은 등급을 또 사면  : 중복 구매 차단
  * - 상위 등급으로 올리면 : 같은 기간 상품만, 남은 기간의 차액만 결제 (종료일은 그대로)
  * - 하위 등급은         : 이용이 끝난 뒤에만 구매
  */
@@ -26,6 +27,9 @@ public interface SubscriptionService {
 
     /** 판매 중인 상품 목록 (회원 상태에 따라 buyable / payAmount가 채워진다) */
     List<ProductResponse> getProducts(int userId);
+
+    /** 결제 직전 상품/구독 정책을 서버 기준으로 재검증한다. */
+    PurchasePolicyResponse getPurchasePolicy(int userId, int productId);
 
     /** 지금 내 구독 (없으면 BASIC) */
     SubscriptionResponse getMySubscription(int userId);

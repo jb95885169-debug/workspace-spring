@@ -1,0 +1,391 @@
+body {
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f7f7f7;
+}
+
+
+/* =========================
+   채팅 전체
+   ========================= */
+
+.chat-room-container {
+    width: 500px;
+
+    height: 700px;
+
+    margin: 40px auto;
+
+    background: white;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   헤더
+   ========================= */
+
+.chat-room-header {
+    height: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 15px;
+
+    border-bottom: 1px solid #eee;
+
+    box-sizing: border-box;
+}
+
+
+.back-btn {
+    width: 35px;
+
+    height: 35px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+
+.chat-room-title {
+    flex: 1;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-right: 35px;
+}
+
+
+/* =========================
+   메시지 영역
+   ========================= */
+
+.chat-messages {
+    flex: 1;
+
+    padding: 20px;
+
+    overflow-y: auto;
+
+    background: #fafafa;
+
+    display: flex;
+
+    flex-direction: column;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   날짜 구분선
+   ========================= */
+
+.date-separator {
+    width: 100%;
+
+    margin: 18px 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #999;
+
+    font-size: 11px;
+}
+
+
+.date-separator::before,
+.date-separator::after {
+    content: "";
+
+    flex: 1;
+
+    border-top: 1px solid #e5e5e5;
+}
+
+
+.date-separator span {
+    margin: 0 10px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   메시지
+   ========================= */
+
+.message {
+    margin-bottom: 12px;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.my-message {
+    align-items: flex-end;
+}
+
+
+.other-message {
+    align-items: flex-start;
+}
+
+
+/* =========================
+   말풍선
+   ========================= */
+
+.message-content {
+    display: inline-block;
+
+    max-width: 70%;
+
+    padding: 10px 14px;
+
+    border-radius: 12px;
+
+    word-break: break-word;
+
+    line-height: 1.4;
+
+    font-size: 14px;
+}
+
+
+.my-message .message-content {
+    background: #ff5c7a;
+
+    color: white;
+}
+
+
+.other-message .message-content {
+    background: #eee;
+
+    color: #333;
+}
+
+
+/* =========================
+   시간 / 읽음
+   ========================= */
+
+.message-info {
+    margin-top: 4px;
+
+    display: flex;
+
+    align-items: center;
+
+    font-size: 10px;
+
+    line-height: 1;
+
+    color: #999;
+}
+
+
+.my-message .message-info {
+    justify-content: flex-end;
+}
+
+
+.other-message .message-info {
+    justify-content: flex-start;
+}
+
+
+/* =========================
+   안 읽음
+   ========================= */
+
+.message-unread-count {
+    margin-right: 4px;
+
+    font-size: 10px;
+
+    font-weight: bold;
+
+    color: #ff5c7a;
+}
+
+
+/* =========================
+   이미지
+   ========================= */
+
+.message-image {
+    display: block;
+
+    max-width: 250px;
+
+    max-height: 300px;
+
+    border-radius: 10px;
+
+    object-fit: cover;
+}
+
+
+/* =========================
+   동영상
+   ========================= */
+
+.message-video {
+    display: block;
+
+    width: 250px;
+
+    max-height: 300px;
+
+    border-radius: 10px;
+}
+
+
+/* =========================
+   입력 영역
+   ========================= */
+
+.chat-input-area {
+    display: flex;
+
+    gap: 10px;
+
+    padding: 15px;
+
+    border-top: 1px solid #eee;
+
+    background: white;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   입력창
+   ========================= */
+
+.chat-input {
+    flex: 1;
+
+    padding: 10px 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+}
+
+
+.chat-input:focus {
+    border-color: #ff5c7a;
+}
+
+
+/* =========================
+   전송 버튼
+   ========================= */
+
+.send-btn {
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 10px 16px;
+
+    background: #ff5c7a;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.send-btn:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================
+   스크롤바
+   ========================= */
+
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #ddd;
+
+    border-radius: 10px;
+}
+
+.attach-btn {
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.attach-btn:hover {
+    opacity: 0.7;
+}
+
+
+/* =========================
+   읽기 전용 (상대가 매칭을 취소한 대화)
+   ========================= */
+
+/* .chat-input-area의 display: flex보다 hidden 속성이 우선하도록 */
+[hidden] {
+    display: none !important;
+}
+
+.read-only-notice {
+    justify-content: center;
+
+    color: #888;
+
+    font-size: 13px;
+
+    background: #fafafa;
+}

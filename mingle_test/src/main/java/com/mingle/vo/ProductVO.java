@@ -19,4 +19,5 @@ public class ProductVO {
     private String description;
     private int price;            // 원
     private int durationDays;     // 이용 기간 (일)
+    private boolean active;
 }

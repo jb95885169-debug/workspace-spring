@@ -1,0 +1,52 @@
+/* =========================================================
+   임시로 올린 사진 미리보기 (photoUpload.js와 한 쌍)
+   가입 / 프로필 수정 / 피드 작성 화면이 함께 쓴다.
+   ========================================================= */
+
+.temp-photo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.temp-photo {
+    position: relative;
+
+    width: 90px;
+}
+
+.temp-photo img {
+    width: 90px;
+    height: 115px;
+
+    object-fit: cover;
+
+    /* 아직 저장 전이라는 뜻으로 점선 */
+    border: 1px dashed #ff4f81;
+    border-radius: 10px;
+}
+
+.temp-photo-remove {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    width: 22px;
+    height: 22px;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #333;
+    color: #fff;
+
+    font-size: 14px;
+    line-height: 22px;
+
+    cursor: pointer;
+}

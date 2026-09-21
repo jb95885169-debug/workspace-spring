@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mingle.dto.PaymentHistoryResponse;
 import com.mingle.dto.PaymentRequest;
 import com.mingle.dto.ProductResponse;
+import com.mingle.dto.PurchasePolicyResponse;
 import com.mingle.dto.SubscriptionResponse;
 import com.mingle.mapper.SubscriptionMapper;
 import com.mingle.type.SubscriptionTier;
@@ -28,6 +29,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Autowired
     private SubscriptionMapper subscriptionMapper;
+
+    @Autowired
+    private PortOnePaymentService portOnePaymentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,6 +51,32 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
 
         return products;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PurchasePolicyResponse getPurchasePolicy(int userId, int productId) {
+
+        ProductVO product = subscriptionMapper.selectActiveProduct(productId);
+        if (product == null) {
+            throw new IllegalArgumentException("판매 중인 상품이 아닙니다.");
+        }
+
+        SubscriptionResponse current = getMySubscription(userId);
+        Purchase purchase = plan(current, product.getTier(), product.getPrice(), product.getDurationDays());
+        int remainingDays = current.getEndDate() == null
+                ? 0 : remainingDays(current.getEndDate(), new Date());
+        int remainingValue = current.getEndDate() == null || current.getDurationDays() <= 0
+                ? 0 : (int) Math.round((double) current.getPrice() / current.getDurationDays() * remainingDays);
+
+        return new PurchasePolicyResponse(
+                productId,
+                current.getTier(),
+                purchase.buyable,
+                purchase.amount,
+                remainingDays,
+                remainingValue,
+                purchase.note);
     }
 
     @Override
@@ -80,12 +110,34 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new IllegalArgumentException("판매 중인 상품이 아닙니다.");
         }
 
+        PortOnePaymentService.VerifiedPayment verified =
+            portOnePaymentService.verify(
+                    request.getPaymentId() == null ? request.getImpUid() : request.getPaymentId(),
+                    request.getMerchantUid());
+
+        String expectedMerchantPrefix = "mingle-" + userId + "-" + product.getId() + "-";
+        if (!verified.getMerchantUid().startsWith(expectedMerchantPrefix)) {
+            throw new IllegalArgumentException("회원의 주문번호가 아닙니다.");
+        }
+
+        PaymentVO previousPayment = subscriptionMapper.selectPaymentByImpUid(verified.getImpUid());
+        if (previousPayment != null) {
+            if (previousPayment.getUserId() != userId) {
+                throw new IllegalArgumentException("이미 다른 회원이 처리한 결제입니다.");
+            }
+            return getMySubscription(userId);
+        }
+
         SubscriptionResponse current = getMySubscription(userId);
 
         Purchase purchase = plan(current, product.getTier(), product.getPrice(), product.getDurationDays());
 
         if (!purchase.buyable) {
             throw new IllegalArgumentException(purchase.note);
+        }
+
+        if (verified.getAmount() != purchase.amount) {
+            throw new IllegalArgumentException("결제 금액이 상품 금액과 일치하지 않습니다.");
         }
 
         // 업그레이드는 남은 기간을 새 등급으로 옮기므로 옛 구독을 여기서 끝낸다
@@ -98,6 +150,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         payment.setProductId(product.getId());
         payment.setProductName(product.getName());
         payment.setAmount(purchase.amount);
+        payment.setImpUid(verified.getImpUid());
+        payment.setMerchantUid(verified.getMerchantUid());
 
         subscriptionMapper.insertPayment(payment);   // selectKey로 payment.id가 채워진다
 
@@ -147,14 +201,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             return Purchase.no(currentTier.getDisplayName() + " 이용이 끝난 뒤에 구매할 수 있습니다.");
         }
 
-        // 3. 같은 등급이면 남은 기간에 이어 붙이고 정가
+        // 3. 같은 등급은 중복 구매하지 않는다.
         if (newTier == currentTier) {
-            return Purchase.ok(
-                    price,
-                    current.getEndDate(),
-                    plusDays(current.getEndDate(), durationDays),
-                    false,
-                    "지금 구독이 끝난 뒤부터 " + durationDays + "일 더 이용합니다.");
+            return Purchase.no("이미 " + currentTier.getDisplayName() + " 멤버십을 이용 중입니다.");
         }
 
         // 4. 업그레이드: 같은 기간 상품만 (골드 1개월 → 플래티넘 1개월)

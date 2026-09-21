@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mingle.dto.PaymentHistoryResponse;
 import com.mingle.dto.PaymentRequest;
 import com.mingle.dto.ProductResponse;
+import com.mingle.dto.PurchasePolicyResponse;
 import com.mingle.dto.SubscriptionResponse;
 import com.mingle.security.LoginUserId;
 import com.mingle.service.SubscriptionService;
@@ -44,8 +45,17 @@ public class SubscriptionRestController {
         return ResponseEntity.ok(subscriptionService.getMySubscription(userId));
     }
 
+    // 결제 버튼을 누른 순간의 상품/구독 정책을 서버에서 재검증
+    @GetMapping("/policy")
+    public ResponseEntity<PurchasePolicyResponse> getPurchasePolicy(
+            int productId,
+            @LoginUserId int userId) {
 
-    // 결제 (실제 결제 연동 없음, 결제 내역 + 구독 생성)
+        return ResponseEntity.ok(subscriptionService.getPurchasePolicy(userId, productId));
+    }
+
+
+    // PortOne 결제 결과를 서버에서 검증한 뒤 결제 내역 + 구독 생성
     @PostMapping("/pay")
     public ResponseEntity<SubscriptionResponse> pay(
             @RequestBody PaymentRequest request,
