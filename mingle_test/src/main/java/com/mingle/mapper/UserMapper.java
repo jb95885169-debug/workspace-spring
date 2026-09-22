@@ -33,6 +33,10 @@ public interface UserMapper {
 			@Param("userId") int userId,
 			@Param("status") String status);
 
+	int suspendUser(
+			@Param("userId") long userId,
+			@Param("suspendedUntil") Date suspendedUntil);
+
 	// 추천 회원 목록 (나에게 슈퍼 좋아요 보낸 회원 먼저)
 	List<UserResponse> selectRecommendedUsers(int userId);
 

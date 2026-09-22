@@ -5,25 +5,38 @@
 <mapper namespace="com.mingle.mapper.ReportMapper">
 
     <select id="selectReportsForAdmin" resultType="com.mingle.vo.ReportVO">
-        SELECT id, reporter_id AS reporterId, target_user_id AS targetUserId,
-               reason, title, content, status, processed_at AS processedAt
+         SELECT r.id, r.reporter_id AS reporterId, r.target_type AS targetType,
+             r.target_id AS targetUserId,
+             reporter.nickname AS reporterNickname, target.nickname AS targetNickname,
+             r.reason_type AS reason, r.title, r.content, r.status,
+             r.created_at AS createdAt, r.processed_at AS processedAt
         FROM mingle_reports
+         r JOIN mingle_user_profiles reporter ON reporter.user_id = r.reporter_id
+           JOIN mingle_user_profiles target ON target.user_id = r.target_id
         ORDER BY CASE WHEN status = 'PENDING' THEN 0 ELSE 1 END, id DESC
     </select>
 
     <select id="selectReportsByReporter" resultType="com.mingle.vo.ReportVO">
-        SELECT id, reporter_id AS reporterId, target_user_id AS targetUserId,
-               reason, title, content, status, processed_at AS processedAt
-        FROM mingle_reports
-        WHERE reporter_id = #{reporterId}
+         SELECT r.id, r.reporter_id AS reporterId, r.target_type AS targetType,
+             r.target_id AS targetUserId,
+             reporter.nickname AS reporterNickname, target.nickname AS targetNickname,
+             r.reason_type AS reason, r.title, r.content, r.status,
+             r.created_at AS createdAt, r.processed_at AS processedAt
+         FROM mingle_reports r
+         JOIN mingle_user_profiles reporter ON reporter.user_id = r.reporter_id
+         JOIN mingle_user_profiles target ON target.user_id = r.target_id
+         WHERE r.reporter_id = #{reporterId}
         ORDER BY id DESC
     </select>
 
     <insert id="insertReport" parameterType="com.mingle.vo.ReportVO">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_mingle_reports.NEXTVAL FROM dual
+        </selectKey>
         INSERT INTO mingle_reports (
-            reporter_id, target_user_id, reason, title, content, status
+            id, reporter_id, target_id, target_type, reason_type, title, content, status
         ) VALUES (
-            #{reporterId}, #{targetUserId}, #{reason}, #{title}, #{content}, 'PENDING'
+            #{id}, #{reporterId}, #{targetUserId}, #{targetType}, #{reason}, #{title}, #{content}, 'PENDING'
         )
     </insert>
 
@@ -35,7 +48,7 @@
         UPDATE mingle_reports
         SET status = #{status},
             processed_at = CASE
-                WHEN #{status} IN ('RESOLVED', 'REJECTED') THEN SYSDATE
+                WHEN #{status} IN ('RESOLVED', 'REJECTED') THEN #{processedAt}
                 ELSE NULL
             END
         WHERE id = #{reportId}
@@ -44,15 +57,14 @@
 
     <select id="selectReportById" resultType="com.mingle.vo.ReportVO">
         SELECT
-            id,
-            reporter_id AS reporterId,
-            target_user_id AS targetUserId,
-            reason,
-            title,
-            content,
-            status,
-            processed_at AS processedAt
-        FROM mingle_reports
-        WHERE id = #{reportId}
+            r.id, r.reporter_id AS reporterId, r.target_type AS targetType,
+            r.target_id AS targetUserId,
+            reporter.nickname AS reporterNickname, target.nickname AS targetNickname,
+            r.reason_type AS reason, r.title, r.content, r.status,
+            r.created_at AS createdAt, r.processed_at AS processedAt
+        FROM mingle_reports r
+        JOIN mingle_user_profiles reporter ON reporter.user_id = r.reporter_id
+        JOIN mingle_user_profiles target ON target.user_id = r.target_id
+        WHERE r.id = #{reportId}
     </select>
 </mapper>

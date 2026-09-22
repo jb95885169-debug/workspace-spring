@@ -16,6 +16,7 @@ public class UserVO {
     private String passwordHash;   // BCrypt 해시 (mingle_users.password_hash)
     private String phone;
     private String status;
+    private Date suspendedUntil;
     private Date lastLoginAt;
     private Date createdAt;
     private Date updatedAt;

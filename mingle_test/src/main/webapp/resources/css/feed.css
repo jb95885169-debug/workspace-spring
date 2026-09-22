@@ -405,6 +405,11 @@ body {
     gap: 8px;
 }
 
+.report-form[hidden],
+.report-history[hidden] {
+    display: none !important;
+}
+
 .report-form label {
     margin-top: 4px;
     color: #666;

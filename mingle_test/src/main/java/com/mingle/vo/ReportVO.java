@@ -11,9 +11,13 @@ public class ReportVO {
     private long id;
     private long reporterId;
     private long targetUserId;
+    private String targetType;
+    private String reporterNickname;
+    private String targetNickname;
     private String reason;
     private String title;
     private String content;
     private String status;
+    private Date createdAt;
     private Date processedAt;
 }

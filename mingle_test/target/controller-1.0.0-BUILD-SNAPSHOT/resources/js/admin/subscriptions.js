@@ -74,18 +74,56 @@ function renderReports(reports) {
     reports.forEach(function (report) {
         var row = document.createElement('div');
         row.className = 'admin-row';
-        row.innerHTML = '<strong></strong><div><b></b><p></p><small></small></div><select><option>PENDING</option><option>RESOLVED</option><option>REJECTED</option></select><button>처리</button>';
+        row.innerHTML = '<strong></strong><div class="report-detail"><b></b><p class="report-users"></p><p class="report-date"></p><p class="report-reason"></p><p class="report-content"></p></div><div class="report-actions"><label>정지 기간(일)<input class="suspension-days" type="number" min="1" max="3650" placeholder="일수"></label><button class="resolve-report">처리</button><button class="reject-report" type="button">조치없음</button></div>';
         row.querySelector('strong').textContent = '#' + report.id;
         row.querySelector('b').textContent = report.title || report.reason || '신고 내용';
-        row.querySelector('p').textContent = report.content || '';
-        row.querySelector('small').textContent = (report.reason ? '사유: ' + report.reason + ' · ' : '') + (report.processedAt || '미처리');
-        row.querySelector('select').value = report.status;
-        row.querySelector('button').onclick = function () {
-            adminPatch('/reports/' + report.id, { status: row.querySelector('select').value }, row.querySelector('button'));
+        row.querySelector('.report-users').textContent = '신고자: ' + (report.reporterNickname || '-') + ' (#' + report.reporterId + ')  |  피신고자: ' + (report.targetNickname || '-') + ' (#' + report.targetUserId + ')';
+        row.querySelector('.report-date').textContent = '신고일시: ' + formatReportDate(report.createdAt);
+        row.querySelector('.report-reason').textContent = '신고 사유: ' + reportReasonLabel(report.reason);
+        row.querySelector('.report-content').textContent = '신고 내용: ' + (report.content || '-');
+
+        var daysInput = row.querySelector('.suspension-days');
+        var resolveButton = row.querySelector('.resolve-report');
+        var rejectButton = row.querySelector('.reject-report');
+        resolveButton.onclick = function () {
+            adminPatch('/reports/' + report.id, {
+                status: 'RESOLVED',
+                suspensionDays: Number(daysInput.value)
+            }, resolveButton);
         };
+        rejectButton.onclick = function () {
+            adminPatch('/reports/' + report.id, {
+                status: 'REJECTED'
+            }, rejectButton);
+        };
+
+        if (report.status !== 'PENDING') {
+            daysInput.disabled = true;
+            resolveButton.disabled = true;
+            rejectButton.disabled = true;
+            row.classList.add('report-processed');
+        }
+
         list.appendChild(row);
     });
     if (!reports.length) list.innerHTML = '<p class="empty">신고가 없습니다.</p>';
+}
+
+function reportReasonLabel(reason) {
+    var labels = {
+        SPAM: '스팸 및 홍보',
+        ABUSE: '욕설 및 비방',
+        INAPPROPRIATE: '부적절한 콘텐츠',
+        FAKE_PROFILE: '사칭 및 도용',
+        ETC: '기타'
+    };
+    return labels[reason] || reason || '-';
+}
+
+function formatReportDate(value) {
+    if (!value) return '-';
+    var date = new Date(value);
+    return isNaN(date.getTime()) ? value : date.toLocaleString('ko-KR');
 }
 
 function adminPatch(path, body, button) {
@@ -93,7 +131,11 @@ function adminPatch(path, body, button) {
     fetch(contextPath + '/api/admin/management' + path, {
         method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
     }).then(function (response) {
-        if (!response.ok) throw new Error('관리자 처리에 실패했습니다.');
+        if (!response.ok) {
+            return response.json().catch(function () { return {}; }).then(function (data) {
+                throw new Error(data.message || '관리자 처리에 실패했습니다.');
+            });
+        }
         return response;
     }).then(loadAdminOverview).catch(function (error) { alert(error.message); button.disabled = false; });
 }

@@ -35,6 +35,6 @@
 <script>
     const contextPath = '${pageContext.request.contextPath}';
 </script>
-<script src="${pageContext.request.contextPath}/resources/js/admin/subscriptions.js?v=20260921-2"></script>
+<script src="${pageContext.request.contextPath}/resources/js/admin/subscriptions.js?v=20260922-2"></script>
 </body>
 </html>

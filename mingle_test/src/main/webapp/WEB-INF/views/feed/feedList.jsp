@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>피드</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/feed.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/photoUpload.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/feed.css?v=20260922-1">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/photoUpload.css?v=20260922">
 </head>
 
 <body>
@@ -78,11 +78,11 @@
             <label for="reportReason">신고 사유</label>
             <select id="reportReason" required>
                 <option value="">신고 사유를 선택해 주세요.</option>
-                <option value="스팸 및 홍보">스팸 및 홍보</option>
-                <option value="욕설 및 비방">욕설 및 비방</option>
-                <option value="부적절한 콘텐츠">부적절한 콘텐츠</option>
-                <option value="사칭 및 도용">사칭 및 도용</option>
-                <option value="기타">기타</option>
+                <option value="SPAM">스팸 및 홍보</option>
+                <option value="ABUSE">욕설 및 비방</option>
+                <option value="INAPPROPRIATE">부적절한 콘텐츠</option>
+                <option value="FAKE_PROFILE">사칭 및 도용</option>
+                <option value="ETC">기타</option>
             </select>
             <label for="reportSubject">신고 제목</label>
             <input id="reportSubject" type="text" maxlength="100" placeholder="제목을 입력해 주세요." required>
@@ -111,9 +111,9 @@
     const isAdmin = ${pageContext.request.isUserInRole('ADMIN')};
 </script>
 
-<script src="${pageContext.request.contextPath}/resources/js/common.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/photoUpload.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/feed/feed.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common.js?v=20260922"></script>
+<script src="${pageContext.request.contextPath}/resources/js/photoUpload.js?v=20260922"></script>
+<script src="${pageContext.request.contextPath}/resources/js/feed/feed.js?v=20260922-1"></script>
 
 </body>
 </html>

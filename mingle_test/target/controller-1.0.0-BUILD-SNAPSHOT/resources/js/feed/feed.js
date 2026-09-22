@@ -529,17 +529,57 @@ function loadMyReports() {
                 status.textContent = report.status === "PENDING" ? "접수" : report.status === "RESOLVED" ? "처리 완료" : "반려";
 
                 const reason = document.createElement("p");
-                reason.textContent = "사유: " + report.reason;
+                reason.textContent = "사유: " + reportReasonLabel(report.reason);
+
+                const content = document.createElement("p");
+                content.textContent = "내용: " + (report.content || "-");
+
+                const target = document.createElement("p");
+                target.textContent = "신고 대상: " + (report.targetNickname || "회원 " + report.targetUserId);
+
+                const processedAt = document.createElement("p");
+                processedAt.classList.add("report-processed-at");
+                processedAt.textContent = report.processedAt
+                    ? "처리일시: " + formatReportDate(report.processedAt)
+                    : "아직 처리되지 않았습니다.";
 
                 item.appendChild(heading);
                 item.appendChild(status);
                 item.appendChild(reason);
+                item.appendChild(content);
+                item.appendChild(target);
+                item.appendChild(processedAt);
                 history.appendChild(item);
             });
         })
         .catch(function () {
             history.textContent = "신고 내역을 불러오지 못했습니다.";
         });
+}
+
+
+function formatReportDate(value) {
+
+    if (!value) {
+        return "-";
+    }
+
+    const date = new Date(value);
+    return isNaN(date.getTime()) ? value : date.toLocaleString("ko-KR");
+}
+
+
+function reportReasonLabel(reason) {
+
+    const labels = {
+        SPAM: "스팸 및 홍보",
+        ABUSE: "욕설 및 비방",
+        INAPPROPRIATE: "부적절한 콘텐츠",
+        FAKE_PROFILE: "사칭 및 도용",
+        ETC: "기타"
+    };
+
+    return labels[reason] || reason || "-";
 }
 
 

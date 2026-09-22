@@ -1,6 +1,7 @@
 package com.mingle.security;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,20 @@ public class CustomUserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
+        boolean active = "ACTIVE".equals(user.getStatus())
+            || ("BANNED".equals(user.getStatus())
+                && user.getSuspendedUntil() != null
+                && user.getSuspendedUntil().before(new Date()));
+
+        if (active && "BANNED".equals(user.getStatus())) {
+            userMapper.updateUserStatus(user.getId(), "ACTIVE");
+        }
+
         return new LoginUser(
                 user.getId(),
                 user.getEmail(),
                 user.getPasswordHash(),
-                "ACTIVE".equals(user.getStatus()),   // 정지 / 휴면 / 탈퇴 계정은 로그인 불가
+            active,
                 getAuthorities(user.getId()));
     }
 

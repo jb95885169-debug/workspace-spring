@@ -1,6 +1,8 @@
 package com.mingle.service;
 
 import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,12 +43,31 @@ public class AdminManagementService {
     }
 
     @Transactional
-    public void updateReport(long reportId, String status) {
-        if (status == null || !("PENDING".equals(status)
-                || "RESOLVED".equals(status) || "REJECTED".equals(status))) {
+    public void updateReport(long reportId, String status, Integer suspensionDays) {
+        if (status == null || !("RESOLVED".equals(status) || "REJECTED".equals(status))) {
             throw new IllegalArgumentException("신고 처리 상태가 올바르지 않습니다.");
         }
-        if (reportMapper.updateReportStatus(reportId, status) == 0) {
+
+        Date processedAt = new Date();
+        if ("RESOLVED".equals(status)) {
+            if (suspensionDays == null || suspensionDays < 1 || suspensionDays > 3650) {
+                throw new IllegalArgumentException("정지 기간은 1일부터 3650일까지 입력해 주세요.");
+            }
+
+            ReportVO report = reportMapper.selectReportById(reportId);
+            if (report == null) {
+                throw new IllegalArgumentException("신고를 찾을 수 없습니다.");
+            }
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(processedAt);
+            calendar.add(Calendar.DATE, suspensionDays);
+            if (userMapper.suspendUser(report.getTargetUserId(), calendar.getTime()) == 0) {
+                throw new IllegalArgumentException("정지할 회원을 찾을 수 없습니다.");
+            }
+        }
+
+        if (reportMapper.updateReportStatus(reportId, status, processedAt) == 0) {
             throw new IllegalArgumentException("신고를 찾을 수 없습니다.");
         }
     }

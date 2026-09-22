@@ -14,9 +14,10 @@ public interface ReportMapper {
     int insertReport(ReportVO report);
 
     /** 관리자 신고 처리 상태 변경 (PENDING / RESOLVED / REJECTED만 허용). */
-    int updateReportStatus(
+        int updateReportStatus(
             @Param("reportId") long reportId,
-            @Param("status") String status);
+            @Param("status") String status,
+            @Param("processedAt") java.util.Date processedAt);
 
     /** 신고 처리 결과 확인용 조회. */
     ReportVO selectReportById(@Param("reportId") long reportId);

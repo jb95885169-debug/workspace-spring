@@ -35,6 +35,7 @@ public class ReportService {
         ReportVO report = new ReportVO();
         report.setReporterId(reporterId);
         report.setTargetUserId(request.getTargetUserId());
+        report.setTargetType("USER");
         report.setReason(request.getReason().trim());
         report.setTitle(request.getTitle().trim());
         report.setContent(request.getContent().trim());

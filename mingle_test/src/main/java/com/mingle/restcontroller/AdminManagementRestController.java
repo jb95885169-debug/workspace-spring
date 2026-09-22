@@ -49,7 +49,7 @@ public class AdminManagementRestController {
     public ResponseEntity<Void> updateReport(@PathVariable long reportId,
             @RequestBody StatusRequest body, HttpServletRequest request) {
         if (!isAdmin(request)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        adminManagementService.updateReport(reportId, body.status);
+        adminManagementService.updateReport(reportId, body.status, body.suspensionDays);
         return ResponseEntity.noContent().build();
     }
 
@@ -57,6 +57,9 @@ public class AdminManagementRestController {
         return request.isUserInRole("ADMIN");
     }
 
-    public static class StatusRequest { public String status; }
+    public static class StatusRequest {
+        public String status;
+        public Integer suspensionDays;
+    }
     public static class AnswerRequest { public String answer; }
 }
